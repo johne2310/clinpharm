@@ -1,0 +1,12 @@
+{
+  "name": "clinpharm",
+  "app_id": "3fbed34c",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}

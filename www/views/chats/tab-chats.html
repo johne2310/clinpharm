@@ -1,0 +1,30 @@
+<ion-view view-title="Chats">
+    <ion-content>
+        <ion-list>
+            <!--            <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in vm.chats" type="item-text-wrap" href="#/tab/chats/{{chat.id}}">-->
+
+            <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="chat in vm.chats" type="item-text-wrap" ui-sref="tab.chat-detail({chatId: chat.id})">
+
+                <img ng-src="{{chat.face}}">
+                <h2>{{chat.name}}</h2>
+                <p>{{chat.lastText}} - {{chat.id}}</p>
+                <i class="icon ion-chevron-right icon-accessory"></i>
+
+                <ion-option-button class="button-assertive" ng-click="vm.remove(chat)">
+                    Delete
+                </ion-option-button>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+
+    <!-- Send Message Footer Area -->
+    <ion-footer-bar keyboard-attach class="bar-assertive item-input-inset">
+        <label class="item-input-wrapper">
+            <input type="text" placeholder="Type your message" ng-model="activity.type" />
+        </label>
+        <button class="button button-clear" ng-click="addActivity()">
+            Send
+        </button>
+    </ion-footer-bar>
+
+</ion-view>

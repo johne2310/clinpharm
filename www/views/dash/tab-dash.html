@@ -1,0 +1,73 @@
+<ion-view view-title="ClinPharm Home" hide-back-button="true">
+    <ion-nav-buttons side="left">
+        <a ng-click="vm.logOut()" class="button" nav-clear>Logout</a>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <a ng-click="vm.addActivityModal()" class="button button-icon icon ion-ios-plus-outline" nav-clear></a>
+    </ion-nav-buttons>
+
+    <ion-content class="padding-top">
+        <h4 align="center">Welcome back {{ firstname }}!</h4>
+        <!--        <h4 align="center">Userkey {{ userkey }}!</h4>-->
+        <div class="item item-divider item-balanced" align="center">Totals</div>
+        <div>
+
+            <div class="row genres">
+                <div class="col " align="center ">This Week</div>
+                <div class="col " align="center ">This Month</div>
+                <div class="col " align="center ">Total</div>
+            </div>
+            <div class="row genres">
+                <div class="col " align="center ">{{ vm.weekCount }}</div>
+                <div class="col " align="center ">{{ vm.monthCount }}</div>
+                <div class="col " align="center ">{{ vm.totalActivity }}</div>
+            </div>
+        </div>
+        <div>
+            <button class="button-positive" ng-click="vm.getCount()">Get Count</button>
+        </div>
+        <ion-list>
+            <ion-item ng-repeat="activity in vm.activities | orderBy: 'timestamp'" class="item-remove-animate ">
+                <h2>{{activity.name}} <span class="item-note-icon" ng-if="activity.notes"> <i class="ion-compose"></i>
+                    </span></h2>
+                <p>
+                    <i class="ion-android-person "></i >
+                    <span>{{activity.pharmacist}} Records: {{results.length}} </span>
+                </p >
+
+				<p>
+				<i class="ion-ios-clock-outline "></i >
+				<span>{{activity.date}} - {{activity.time}} </span>
+				    <span ng-if="activity.updated" class="item-note"> Updated
+                    </span>
+
+                </p>
+
+                <ion-option-button class="button-info button-dark ion-edit " ng-click="vm.editActivityModal(activity) ">
+                    &nbsp;Edit
+                </ion-option-button>
+                <ion-option-button class="button-assertive icon-left ion-trash-b " ng-click="vm.deleteActivity(activity) ">
+                    &nbsp;Delete
+                </ion-option-button>
+                <ion-option-button class="button-balanced icon-left ion-compose" ng-model="notes" ng-click="vm.showNotes(activity) ">
+                    &nbsp;Notes
+                </ion-option-button>
+
+                <!--
+                //TODO add icon as avatar
+                //TODO import styles from Caffeinehit
+                //TODO add UR
+                //TODO add click to edit
+-->
+            </ion-item>
+        </ion-list>
+
+    </ion-content>
+
+        <script id="showNotes.html" type="text/ng-template">
+      <input type="text" ng-model="contactMessage.text" name="message">
+     Message {{contactMessage.text}}
+    </script>
+
+
+</ion-view>
