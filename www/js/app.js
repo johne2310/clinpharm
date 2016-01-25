@@ -42,21 +42,24 @@
             .state('login', {
             url: '/login',
             templateUrl: 'views/login/login.html',
-            controller: 'loginCtrl'
+            controller: 'loginCtrl',
+            controllerAs: 'vm'
         })
 
         //register page
         .state('register', {
             url: '/register',
             templateUrl: 'views/register/register.html',
-            controller: 'registerCtrl'
+            controller: 'registerCtrl',
+            controllerAs: 'vm'
         })
 
         //Forgot password page
         .state('forgot', {
             url: '/forgot',
             templateUrl: 'views/forgot/forgot.html',
-            controller: 'forgotCtrl'
+            controller: 'forgotCtrl',
+            controllerAs: 'vm'
         })
 
         // setup an abstract state for the tabs directive

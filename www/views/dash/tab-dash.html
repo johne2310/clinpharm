@@ -7,7 +7,7 @@
     </ion-nav-buttons>
 
     <ion-content class="padding-top">
-        <h4 align="center">Welcome back {{ firstname }}!</h4>
+        <h4 align="center">Welcome back {{ firstname }}! - {{userkey}} </h4>
         <!--        <h4 align="center">Userkey {{ userkey }}!</h4>-->
         <div class="item item-divider item-balanced" align="center">Totals</div>
         <div>
@@ -23,21 +23,19 @@
                 <div class="col " align="center ">{{ vm.totalActivity }}</div>
             </div>
         </div>
-        <div>
-            <button class="button-positive" ng-click="vm.getCount()">Get Count</button>
-        </div>
+
         <ion-list>
             <ion-item ng-repeat="activity in vm.activities | orderBy: 'timestamp'" class="item-remove-animate ">
                 <h2>{{activity.name}} <span class="item-note-icon" ng-if="activity.notes"> <i class="ion-compose"></i>
                     </span></h2>
                 <p>
                     <i class="ion-android-person "></i >
-                    <span>{{activity.pharmacist}} Records: {{results.length}} </span>
+                    <span>{{activity.pharmacist}} </span>
                 </p >
 
 				<p>
 				<i class="ion-ios-clock-outline "></i >
-				<span>{{activity.date}} - {{activity.time}} </span>
+				<span>{{activity.date}}  </span>
 				    <span ng-if="activity.updated" class="item-note"> Updated
                     </span>
 

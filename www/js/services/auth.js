@@ -15,6 +15,8 @@
                         firstname: user.firstname,
                         lastname: user.lastname,
                         email: user.email,
+                        site: user.site,
+                        ward: user.ward,
                         //        gravatar: get_gravatar(user.email, 40),
                         registered_in: Date()
                     };
@@ -23,7 +25,7 @@
                     return usersRef.set(users);
                     //                .success(function (ref) {
                     //                var id = ref.key();
-                    console.log("added record with id " + uid);
+                    //                    console.log("added record with id " + uid);
                     usersRef.$indexFor(uid); // returns location in the array
                     //            });
                 },
@@ -37,15 +39,13 @@
 
                 register: function (user) {
                     return auth.$createUser({
-                            firstname: user.firstname,
-                            lastname: user.lastname,
                             email: user.email,
                             password: user.password
                         })
                         .then(function () {
                             // authenticate so we have permission to write to Firebase
                             console.log('Logging in users...');
-                            return Auth.login(user);
+                            //                            return Auth.login(user);
                         })
                         .then(function (data) {
                             // store user data in Firebase after creating account

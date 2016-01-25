@@ -3,7 +3,7 @@
         <div class="text-center padding-top">
             <i class="icon ion-android-person-add larger positive"></i>
         </div>
-        <form name="registerForm" novalidate ng-submit="registerForm.$valid && register(user)" ng-class="{ 'has-error' : registerForm.txtemail.$invalid && registerForm.$submitted }">
+        <form name="registerForm" novalidate ng-submit="registerForm.$valid && vm.register(user)" ng-class="{ 'has-error' : registerForm.txtemail.$invalid && registerForm.$submitted }">
             <div class="list">
 
                 <!--               firstname-->
@@ -28,6 +28,30 @@
                     <div class="form-error" ng-message="maxlength">Email address must be less than 30 characters</div>
                 </div>
 
+                <!--                site-->
+                <!--
+ <div class="list">
+
+    <label class="item item-input item-select" ng-model="user.site" name="txtsite">
+        <div class="input-label">
+            &nbsp;
+        </div>
+        <select>
+            <option selected>Epworth Richmond</option>
+            <option>Epworth Eastern</option>
+            <option>Epworth Freemasons</option>
+        </select>
+    </label>
+
+</div>
+
+<div class="form-errors" ng-messages="registerForm.txtsite.$error" ng-if="registerForm.$submitted">
+    <div class="form-error" ng-message="required">This is a required field</div>
+</div>
+-->
+
+
+                <!--                email-->
                 <label class="item item-input item-floating-label">
                     <span class="input-label">Email</span>
                     <input name="txtemail" type="email" ng-model="user.email" placeholder="Email" ng-minlength="5" ng-maxlength="30" required>

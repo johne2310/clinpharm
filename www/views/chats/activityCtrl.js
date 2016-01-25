@@ -4,20 +4,20 @@
         .module('clinpharm')
         .controller('activityCtrl', activityCtrl);
 
-//    activityCtrl.$inject = ['$scope', 'ActivityService', '$rootScope'];
+    //    activityCtrl.$inject = ['$scope', 'vm.activities', '$rootScope'];
 
-    function activityCtrl($scope, ActivityService, $rootScope) {
+    function activityCtrl($scope, $rootScope) {
 
         var vm = this;
 
         vm.addActivity = addActivity;
-        vm.activities = ActivityService;
+        vm.activities = vm.activities;
 
-        $scope.activities = ActivityService;
+        $scope.activities = vm.activities;
 
         $scope.addActivity = function (activity) {
 
-            ActivityService.$add({
+            vm.activities.$add({
                 type: activity.type,
                 date: new Date(),
                 pharmacist: $rootScope.firstname,

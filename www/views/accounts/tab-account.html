@@ -1,18 +1,40 @@
 <ion-view view-title="Account">
     <ion-content>
-        <div class="list">
-            <div class="item item-divider">
-                Select base ward
-            </div>
-            <label class="item item-input item-select">
-                <div class="input-label">
-                    Ward
-                </div>
-                <select ng-model="journal.feeling">
-                    <option ng-repeat="ward in vm.wards">{{ ward }} </option>
-                </select>
-            </label>
 
+        <div class="list">
+            <div class="item item-divider item-balanced">
+                Select Site
+            </div>
+
+            <div>
+                <ion-checkbox ng-repeat="site in vm.siteList" ng-model="site.checked" ng-checked="site.checked">
+                    {{ site.text }}
+                </ion-checkbox>
+            </div>
         </div>
+
+        <!--
+<div class="list">
+    <div class="item item-divider">
+        Select base ward
+    </div>
+    <label class="item item-input item-select">
+        <div class="input-label">
+            Ward
+        </div>
+        <select ng-model="vm.user.ward">
+            <option ng-repeat="ward in vm.wards">{{ ward }} </option>
+        </select>
+    </label>
+
+</div>
+-->
+
+        <button class="button button-block button-positive" ng-click="vm.setSites()">
+            Save Account Details
+        </button>
+        <button class="button button-positive" ng-click="vm.setSites()">
+            Update SubCategory Field
+        </button>
     </ion-content>
 </ion-view>

@@ -18,11 +18,24 @@
             <i class="ion-compose"></i> Select Activity
         </div>
         <ion-list>
-            <ion-radio ng-repeat="item in activityList " ng-value="item.value " ng-model="vm.activity.name "> {{ item.text }}
+            <ion-radio name="activities" ng-repeat="item in vm.activityList " ng-value="item.value " ng-model="vm.activity.name"> {{ item.text }}
             </ion-radio>
         </ion-list>
-        <!--        //TODO insert notes section-->
-        <!--                start journal notes-->
+
+        <!--        Insert site checkboxes-->
+        <div class="list">
+            <div class="item item-divider item-balanced">
+                Select Site
+            </div>
+
+            <ion-list>
+                <ion-radio name="sites" ng-repeat="site in vm.siteList " ng-value="site" ng-model="vm.activity.site"> {{ site }}
+                </ion-radio>
+            </ion-list>
+        </div>
+
+
+        <!--                start notes-->
         <div class="item" style="min-height:100px">
             <label class="item item-input">
                 <!--                    <span class="input-label">Spiritual</span>-->

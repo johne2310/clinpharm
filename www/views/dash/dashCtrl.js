@@ -4,9 +4,9 @@
         .module('clinpharm')
         .controller('DashCtrl', DashCtrl);
 
-    DashCtrl.$inject = ['$scope', '$rootScope', 'Auth', '$location', 'ActivityService', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$firebaseArray'];
+    DashCtrl.$inject = ['$scope', '$rootScope', 'Auth', '$location', 'ActivityService', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$timeout', 'SiteList', 'SetSites'];
 
-    function DashCtrl($scope, $rootScope, Auth, $location, ActivityService, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $firebaseArray) {
+    function DashCtrl($scope, $rootScope, Auth, $location, ActivityService, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $timeout, SiteList, SetSites) {
 
         var vm = this;
         vm.activity = {};
@@ -29,66 +29,27 @@
         var userkey = $rootScope.userkey;
 
 
-        //        $scope.$on('$ionicView.enter', function () {
-        //            vm.activities = ActivityService; //$firebaseArray(ActivityService);
-        //            console.log('User key array ', vm.activites);
-        //            getCount();
-        //
-        //        });
+        $scope.$on('$ionicView.enter', function () {
+            $timeout(function () {
+                getCount();
+            }, 500);
 
-        //        ActivityService.$loaded().then(function () {
-        //            vm.activities = ActivityService; //$firebaseArray(ActivityService);
-        //            console.log('User key array ', vm.activites);
-        //            getCount();
-        //
-        //        });
+        });
 
-        vm.activities = ActivityService.setArray();
-        console.log('User key array ', vm.activites);
+        //load list of activities for logged in user
+        vm.activities = ActivityService.getUser(userkey);
 
-        //        var myRef = ActivityService.getQuery();
-        vm.testRef = ActivityService.getQuery();
-        console.log('myRef ', vm.testRef);
+        //makde ActivityList available to scope
+        vm.activityList = ActivityList;
 
-        vm.testRef2 = ActivityService.getUser(userkey);
-        console.log('myRef2 ', vm.testRef2);
+        //get list of sites for logged in user
+        var siteRef = SetSites;
+        siteRef.on('value', function (snapshot) {
 
+            vm.siteList = snapshot.val();
+            console.log('site list for model: ', vm.siteList);
 
-
-        //        vm.allActivities = ActivityService;
-
-        //        var myRef = new Firebase('https://clinpharm.firebaseio.com/activity');
-        //
-        //        vm.activities = $firebaseArray(myRef);
-        //        console.log('myRef array ', vm.activites);
-        //        console.log('myRef  array length ', vm.activites.length);
-
-
-
-        // create a query for the most recent 25 messages on the server
-        //        var query = myRef
-        //            .orderByChild("pharmacistId")
-        //            .equalTo(userkey).limitToLast(5);
-
-        //        vm.activities = $firebaseArray(query);
-
-        //        console.log('Testing service array ', ActivityService.length);
-        //v
-        //        var myRef = new Firebase('https://clinpharm.firebaseio.com/activity')
-        //            .orderByChild('pharmacistId')
-        //            .equalTo($rootScope.userkey);
-        //
-        //        var myList = $firebaseArray(myRef);
-        //
-        //        console.log('myList: ', myList.length);
-        //
-        //        vm.myActivities = $firebaseArray(myRef);
-        //
-        //        console.log('myActivities: ', myRef.length);
-
-
-
-
+        });
 
 
         ////////////////////////////
@@ -116,7 +77,7 @@
         function editActivityModal(activity) {
             vm.activity = angular.copy(activity);
             vm.addDate = Date.parse(vm.activity.date);
-            $scope.activity.name = vm.activity.name;
+            //            $scope.activity.name = vm.activity.name;
             vm.action = 'Edit';
             vm.edit = true;
             vm.isAdd = false;
@@ -145,9 +106,10 @@
             // set logged status to facilitate destruction of firebaseObject in loginCtrl
             Auth.status = "loggedOut";
             //call Auth factory logout method to de-authorise firebase connection
-            Auth.logout();
+            Auth.$unauth();
             //set base path for logged out users
             $location.path("/login");
+            console.log('Log out successful.');
         }
 
         /////////////////////////////
@@ -155,7 +117,7 @@
         /////////////////////////////
         function deleteActivity(activity) {
             update = 'delete';
-            ActivityService.$remove(activity);
+            vm.activities.$remove(activity);
             updateCount();
         }
 
@@ -163,7 +125,7 @@
         //function save current activity
         /////////////////////////////
         function saveActivity() {
-            ActivityService.$add({
+            vm.activities.$add({
                 name: vm.activity.name,
                 pharmacist: $rootScope.person,
                 pharmacistId: $rootScope.userkey,
@@ -171,7 +133,8 @@
                 recorded: moment().format("DD/MM/YYYY"),
                 time: moment().format('hh:mm a'),
                 timestamp: new Date().getTime(),
-                notes: vm.activity.notes
+                notes: vm.activity.notes,
+                site: vm.activity.site
             });
             showToast();
             update = 'add';
@@ -185,14 +148,17 @@
         //function update current activity
         /////////////////////////////
         function updateActivity(id) {
-            var getIndex = ActivityService.$indexFor(id); //get array index for edited activity
-            ActivityService[getIndex].date = moment(vm.addDate).format("DD/MM/YYYY");
-            ActivityService[getIndex].name = vm.activity.name;
-            ActivityService[getIndex].updated = true; //add a flag to show record has been edited
-            ActivityService[getIndex].updatedon = moment().format("DD/MM/YYYY hh:mm a");
-            ActivityService[getIndex].notes = vm.activity.notes;
-            ActivityService.$save(ActivityService[getIndex]).then(function (ref) {
-                if (ref.key() === ActivityService[getIndex].$id) {
+            var getIndex = vm.activities.$indexFor(id); //get array index for edited activity
+            console.log('Index: ', getIndex + ' Date: ', vm.addDate);
+
+            vm.activities[getIndex].date = moment(vm.addDate).format("DD/MM/YYYY");
+            vm.activities[getIndex].name = vm.activity.name;
+            vm.activities[getIndex].updated = true; //add a flag to show record has been edited
+            vm.activities[getIndex].updatedon = moment().format("DD/MM/YYYY hh:mm a");
+            vm.activities[getIndex].notes = vm.activity.notes;
+            vm.activities[getIndex].site = vm.activity.site;
+            vm.activities.$save(vm.activities[getIndex]).then(function (ref) {
+                if (ref.key() === vm.activities[getIndex].$id) {
                     showToast();
                 } // true
 
@@ -207,8 +173,6 @@
         //function get count of activities
         /////////////////////////////
         function getCount() {
-
-            console.log('myRef ', myRef); //TODO remove
 
             var activityDate; //set variable for getting activity data
             var lastSunday; //set variable to capture last Sunday
@@ -297,7 +261,6 @@
                 ]
             });
         }
-
     } //controller function
 
 })();

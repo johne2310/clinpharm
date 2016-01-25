@@ -8,8 +8,6 @@
 
     function ActivityService($firebaseArray) {
 
-        var userkey;
-
         var ref = new Firebase('https://clinpharm.firebaseio.com' + '/activity');
 
         return {
@@ -28,8 +26,8 @@
 
             var userQuery = ref
                 .orderByChild('pharmacistId')
-                .equalTo(userkey)
-                .limitToLast(3);
+                .equalTo(userkey);
+            //                .limitToLast(3);
 
             return $firebaseArray(userQuery);
         }

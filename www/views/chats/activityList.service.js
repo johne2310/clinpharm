@@ -23,7 +23,7 @@
             },
             {
                 text: "Other",
-                value: "Dther"
+                value: "Other"
             }
         ];
         return activityList;
