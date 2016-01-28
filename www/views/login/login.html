@@ -1,7 +1,7 @@
 <ion-view view-title="Slade Pharmacy - ClinPharm" hide-back-button="true">
     <ion-content class="padding-top">
         <div class="list text-center padding">
-            <i class="icon ion-log-in larger positive"></i>
+            <img ng-src="img/Slade.jpg" />
         </div>
         <form novalidate name="loginForm" ng-submit="loginForm.$valid && vm.login(user)">
             <div class="list">
@@ -35,4 +35,11 @@
             </div>
         </form>
     </ion-content>
+
+
+    <script id="templates/loading.html" type="text/ng-template">
+        <ion-spinner class="light"></ion-spinner>
+        <br />
+        <span>Loading...</span>
+    </script>
 </ion-view>

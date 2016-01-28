@@ -4,11 +4,12 @@
         .module('clinpharm')
         .controller('DashCtrl', DashCtrl);
 
-    DashCtrl.$inject = ['$scope', '$rootScope', 'Auth', '$location', 'ActivityService', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$timeout', 'SiteList', 'SetSites'];
+    DashCtrl.$inject = ['$scope', '$rootScope', 'Auth', '$location', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$timeout', 'SiteList', 'SetSites', '$localStorage', 'UserService', 'ActivityService', '$sessionStorage', '$ionicHistory', '$state'];
 
-    function DashCtrl($scope, $rootScope, Auth, $location, ActivityService, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $timeout, SiteList, SetSites) {
+    function DashCtrl($scope, $rootScope, Auth, $location, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $timeout, SiteList, SetSites, $localStorage, UserService, ActivityService, $sessionStorage, $ionicHistory, $state) {
 
         var vm = this;
+        var siteRef; //var for loading user sites from Firebase. Declare here so can be used in logout
         vm.activity = {};
         vm.logOut = logOut;
         vm.addActivityModal = addActivityModal;
@@ -26,42 +27,69 @@
         vm.showNotes = showNotes;
 
         var update;
-        var userkey = $rootScope.userkey;
 
 
-        $scope.$on('$ionicView.enter', function () {
-            $timeout(function () {
-                getCount();
-            }, 500);
+        //set userkey from UserService
+        var userkey;
 
-        });
+        //        if (userkey) {
+        userkey = UserService.getUserKey();
+        console.log('UserService userkey: ', userkey); //TODO clean up
+        //        } else {
+        //            console.log('Userkey is currently undefined');
+        //        }
+
+        //set user firstname from Userservice (make sure to use vm.prefix in view)
+        vm.firstname = UserService.getFirstname();
+        console.log('UserService firstname: ', vm.firstname); //TODO clean up
+
+        //set user firstname from Userservice (make sure to use vm.prefix in view)
+        var fullname = UserService.getFullname();
+        console.log('UserService fullname: ', fullname); //TODO clean up
 
         //load list of activities for logged in user
         vm.activities = ActivityService.getUser(userkey);
 
-        //makde ActivityList available to scope
+        //make ActivityList available to scope (this contains recorded actions for current user)
         vm.activityList = ActivityList;
 
-        //get list of sites for logged in user
-        var siteRef = SetSites;
-        siteRef.on('value', function (snapshot) {
+        //load activity counter. needs timeout to ensure data is transfered
+        $scope.$on('$ionicView.enter', function () {
+            //load activity counter
+            $timeout(function () {
+                getCount();
+            }, 500);
 
-            vm.siteList = snapshot.val();
-            console.log('site list for model: ', vm.siteList);
+            //get list of sites for current user (from Firebase user profile)
+            siteRef = SetSites.setUserSites();
+            siteRef.on('value', function (snapshot) {
+
+                console.log('snapshot: ', snapshot.val()); //TODO clean up
+                vm.siteList = snapshot.val();
+                //make sites available to scope
+                //                vm.siteList = [];
+                //                for (var i = 0; i < snapshot.val().length; i++); {
+                //                    vm.siteList.push({
+                //                        ref: Math.floor(Math.random() * 100001),
+                //                        name: snapshot.val()[i]
+                //                    });
+                //                }
+                console.log('site list for model: ', vm.siteList); //TODO clean up
+            });
 
         });
-
 
         ////////////////////////////
         //Initialize the modal view.
         ////////////////////////////
-        $ionicModal.fromTemplateUrl('views/chats/activityModal.html', {
+        $ionicModal.fromTemplateUrl('views/dash/activityModal.html', {
             scope: $scope,
             animation: 'slide-in-up'
         }).then(function (modal) {
             $scope.modal = modal;
         });
 
+        //function for opening modal in 'add' mode
         function addActivityModal() {
             vm.activity = {};
             vm.addDate = Date.today();
@@ -74,7 +102,9 @@
             $scope.modal.show();
         }
 
+        //function for opening modal in 'edit' mode
         function editActivityModal(activity) {
+            //make a copy of current activity so any edits are not saved if transaction cancelled
             vm.activity = angular.copy(activity);
             vm.addDate = Date.parse(vm.activity.date);
             //            $scope.activity.name = vm.activity.name;
@@ -92,6 +122,7 @@
         }
 
         function hide() {
+            //ensure option buttons are hidden
             $ionicListDelegate.closeOptionButtons();
         }
         ////////////////////////////
@@ -107,8 +138,12 @@
             Auth.status = "loggedOut";
             //call Auth factory logout method to de-authorise firebase connection
             Auth.$unauth();
-            //set base path for logged out users
-            $location.path("/login");
+
+            //            $window.location.reload(); // CHANGE Remove
+            $ionicHistory.clearCache().then(function () {
+                // Do... Whatever it is you do (if needed)
+                $location.path("/login");
+            });
             console.log('Log out successful.');
         }
 
@@ -125,16 +160,25 @@
         //function save current activity
         /////////////////////////////
         function saveActivity() {
+
+            //check if notes and sites exist. If not record N/A
+            if (!vm.activity.notes) {
+                vm.activity.notes = false;
+            }
+            if (!vm.activity.site) {
+                vm.activity.site = false;
+            }
+
             vm.activities.$add({
                 name: vm.activity.name,
-                pharmacist: $rootScope.person,
-                pharmacistId: $rootScope.userkey,
+                pharmacist: fullname,
+                pharmacistId: userkey,
                 date: moment(vm.addDate).format("DD/MM/YYYY"),
-                recorded: moment().format("DD/MM/YYYY"),
-                time: moment().format('hh:mm a'),
+                recorded: moment().format("DD/MM/YYYY hh:mm a"),
                 timestamp: new Date().getTime(),
                 notes: vm.activity.notes,
-                site: vm.activity.site
+                site: vm.activity.site,
+                ur: vm.activity.ur
             });
             showToast();
             update = 'add';
@@ -155,8 +199,13 @@
             vm.activities[getIndex].name = vm.activity.name;
             vm.activities[getIndex].updated = true; //add a flag to show record has been edited
             vm.activities[getIndex].updatedon = moment().format("DD/MM/YYYY hh:mm a");
-            vm.activities[getIndex].notes = vm.activity.notes;
-            vm.activities[getIndex].site = vm.activity.site;
+            if (vm.activity.notes) {
+                vm.activities[getIndex].notes = vm.activity.notes;
+            }
+            if (vm.activity.site) {
+                vm.activities[getIndex].site = vm.activity.site;
+            }
+            vm.activities[getIndex].ur = vm.activity.ur;
             vm.activities.$save(vm.activities[getIndex]).then(function (ref) {
                 if (ref.key() === vm.activities[getIndex].$id) {
                     showToast();
@@ -182,19 +231,21 @@
             vm.monthCount = 0; //set counter for this month total
             vm.totalActivity = vm.activities.length; //set total count of activities
 
-            console.log('Total: ', vm.totalActivity);
+            console.log('DashCtrl total activities: ', vm.totalActivity);
 
             //loop through activity array and set week and month count
             for (var i = 0; i < vm.activities.length; i++) {
 
-                activityDate = moment(vm.activities[i].date, 'DD/MM/YYYY'); //set activity date
-                lastSunday = moment().weekday(-1); //get date for last Sunday
+                //set activity date
+                activityDate = moment(vm.activities[i].date, 'DD/MM/YYYY');
+                //get date for last Sunday
+                lastSunday = moment().weekday(-1);
                 //calculate the difference between Sunday and activity date then use to match records
                 diff = activityDate.diff(lastSunday, 'days');
                 if (diff >= 0 && diff < 8) {
                     vm.weekCount = vm.weekCount + 1;
                 }
-                if (diff < 0 && diff > -today) {
+                if (diff < 0 && diff > -today) { //TODO refine formula for accuracy on this momth total
                     vm.monthCount = vm.monthCount + 1;
                 }
             }
@@ -246,6 +297,8 @@
             text: "text"
         };
 
+
+        //TODO complete Show Notes function
         function showNotes(activity) {
             $scope.viewNotes = activity.notes;
             console.log('Notes: ', $scope.viewNotes);
@@ -261,6 +314,8 @@
                 ]
             });
         }
+
+
     } //controller function
 
 })();

@@ -11,12 +11,7 @@
         var vm = this;
         vm.setSites = setSites;
         vm.getSites = getSites;
-
-
-
-
-
-
+        vm.cancelSetting = cancelSetting;
 
         function getSites() {
 
@@ -35,13 +30,19 @@
             siteRef.on('value', function (snapshot) {
 
                 //iterate siteList and Firebase sites node and mark matches as checked = true
-                for (var s = 0; s < vm.siteList.length; s++) {
-                    for (var f = 0; f < snapshot.val().length; f++) {
-                        if (vm.siteList[s].text === snapshot.val()[f]) {
-                            vm.siteList[s].checked = true; //set sites to be marked as checked in siteList
-                            $scope.$apply();
+                //first time Freibase sites will be empty (zero length)
+
+                if (snapshot.exists()) {
+
+                    for (var s = 0; s < vm.siteList.length; s++) {
+                        for (var f = 0; f < snapshot.val().length; f++) {
+                            if (vm.siteList[s].text === snapshot.val()[f].name) {
+                                vm.siteList[s].checked = true; //set sites to be marked as checked in siteList
+                            }
                         }
                     }
+                } else {
+                    Utils.alertshow('Please select your site/s');
                 }
             });
         }
@@ -61,12 +62,15 @@
             for (var i = 0; i < vm.siteList.length; i++) {
                 var item = vm.siteList[i];
                 if (item.checked) {
-                    p.push(item.text);
+                    p.push({
+                        name: item.text,
+                        ref: Math.floor(Math.random() * 10001)
+                    });
                 }
             }
 
             //set Firebase reference
-            vm.userRef = new Firebase('https://clinpharm.firebaseio.com/users/' + $scope.userkey + '/sites');
+            vm.userRef = new Firebase('https://clinpharm.firebaseio.com/users/' + $scope.userkey + '/sites'); //CHANGE get userkey from factory
             //set Firebase callback for site sync
             var onComplete = function (error) {
                 if (error) {
@@ -82,6 +86,13 @@
         }
         //end setSites
 
+        ///////////////////////////////////////////////////////////////
+        //function to cancel edit to settingse
+        ///////////////////////////////////////////////////////////////
+        function cancelSetting() {
+
+            $state.go('tab.dash');
+        }
 
 
 

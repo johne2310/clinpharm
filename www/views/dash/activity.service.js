@@ -16,7 +16,6 @@
             getQuery: getQuery
         };
 
-
         function setArray() {
             //            return $q.when($firebaseArray(ref));
             return $firebaseArray(ref);
@@ -39,7 +38,7 @@
 
             return $firebaseArray(query);
         }
-
+        //        return ActivityService;
     }
 
 })();

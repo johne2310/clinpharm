@@ -6,14 +6,23 @@
             var Utils = {
 
                 show: function () {
+
                     $ionicLoading.show({
-                        animation: 'fade-in',
-                        showBackdrop: false,
-                        maxWidth: 200,
-                        showDelay: 500,
-                        template: '<p class="item-icon-left">Loading...<ion-spinner icon="lines"/></p>'
+                        noBackdrop: true,
+                        template: '<ion-spinner icon="ripple" class="spinner-positive"></ion-spinner><br /><span>Loading</span>'
                     });
                 },
+
+                //FIX spinner
+                //                {
+                //                    $ionicLoading.show({
+                //                        animation: 'fade-in',
+                //                        showBackdrop: true,
+                //                        maxWidth: 200,
+                //                        showDelay: 300,
+                //                        template: '<p>Loading...<ion-spinner icon="ripple class="spinner-positive"></ion-spinner></p>'
+                //                    });
+                //                },
 
                 hide: function () {
                     $ionicLoading.hide();

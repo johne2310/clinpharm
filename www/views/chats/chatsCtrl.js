@@ -2,32 +2,27 @@
 
     angular
         .module('clinpharm')
-        .controller('ChatsCtrl', ChatsCtrl);
+        .controller('SummaryCtrl', SummaryCtrl);
 
-    ChatsCtrl.$inject = ['$scope', 'Chats'];
+    SummaryCtrl.$inject = ['$scope'];
 
-    function ChatsCtrl($scope, Chats) {
+    function SummaryCtrl($scope) {
         // With the new view caching in Ionic, Controllers are only called
         // when they are recreated or on app start, instead of every page change.
         // To listen for when this page is active (for example, to refresh data),
         // listen for the $ionicView.enter event:
         //
         $scope.$on('$ionicView.enter', function () {
-            getChats();
+
         });
 
         var vm = this;
 
-        vm.getChats = getChats;
-        vm.remove = remove;
+var ref = new Firebase('https://clinpharm.firebaseio.com/activity');
 
-        function getChats() {
-            vm.chats = Chats.all();
-        }
+        ref.orderByChild
 
-        function remove(chat) {
-            Chats.remove(chat);
-        }
-    }
+
+    } // end controller
 
 })();

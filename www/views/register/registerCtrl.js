@@ -30,12 +30,15 @@
                     id: authData.uid,
                     firstname: user.firstname,
                     lastname: user.lastname,
-                    added: moment().format("DD/MM/YYY"),
+                    added: moment().format("DD/MM/YYY hh:mm a"),
                     details: false
                 });
+
+                //set rootScope variable to pass to UserService factory
                 $rootScope.firstname = user.firstname;
                 $rootScope.person = user.firstname + ' ' + user.lastname;
                 $rootScope.userkey = authData.uid;
+
                 Utils.hide();
                 $state.go('tab.account');
 

@@ -59,8 +59,26 @@
 
                 logout: function () {
                     auth.$unauth();
-                    console.log("Logout successful.");
+                    console.log("Logout from Auth successful.");
                 },
+
+
+                //TODO implement logout from Auth
+                //                function logOut() {
+                //            // set logged status to facilitate destruction of firebaseObject in loginCtrl
+                //            Auth.status = "loggedOut";
+                //            //call Auth factory logout method to de-authorise firebase connection
+                //
+                //            //            $window.location.reload(); // CHANGE Remove
+                //            $ionicHistory.clearCache().then(function () {
+                //                // Do... Whatever it is you do (if needed)
+                //                $location.path("/login");
+                //            });
+                //            console.log('Log out successful.');
+                //        }
+
+
+
 
                 resetpassword: function (user) {
                     return auth.$resetPassword({

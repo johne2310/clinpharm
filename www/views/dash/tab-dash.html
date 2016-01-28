@@ -1,4 +1,4 @@
-<ion-view view-title="ClinPharm Home" hide-back-button="true">
+<ion-view view-title="ClinPharm Home" hide-back-button="true" cache-view="false">
     <ion-nav-buttons side="left">
         <a ng-click="vm.logOut()" class="button" nav-clear>Logout</a>
     </ion-nav-buttons>
@@ -7,7 +7,7 @@
     </ion-nav-buttons>
 
     <ion-content class="padding-top">
-        <h4 align="center">Welcome back {{ firstname }}! - {{userkey}} </h4>
+        <h4 align="center">Welcome back {{ vm.firstname }}!</h4>
         <!--        <h4 align="center">Userkey {{ userkey }}!</h4>-->
         <div class="item item-divider item-balanced" align="center">Totals</div>
         <div>
@@ -30,7 +30,7 @@
                     </span></h2>
                 <p>
                     <i class="ion-android-person "></i >
-                    <span>{{activity.pharmacist}} </span>
+                    <span>{{activity.ur}} </span>
                 </p >
 
 				<p>

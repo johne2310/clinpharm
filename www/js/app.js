@@ -40,6 +40,7 @@
 
         //opening page and login
             .state('login', {
+            cache: false,
             url: '/login',
             templateUrl: 'views/login/login.html',
             controller: 'loginCtrl',
@@ -48,6 +49,7 @@
 
         //register page
         .state('register', {
+            cache: false,
             url: '/register',
             templateUrl: 'views/register/register.html',
             controller: 'registerCtrl',
@@ -72,6 +74,7 @@
         // Each tab has its own nav history stack:
 
         .state('tab.dash', {
+            cache: false,
             url: '/dash',
             views: {
                 'tab-dash': {
