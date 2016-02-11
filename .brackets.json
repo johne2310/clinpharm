@@ -1,7 +1,5 @@
 {
     "jscodehints.detectedExclusions": [
-        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/www/lib/moment/locale/cs.js",
-        "moment.js",
-        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/moment/locale/eu.js"
+
     ]
 }

@@ -1,12 +1,17 @@
+//dashCtrl.js
+
+/*global angular */
+/*global moment */
+
 (function () {
 
     angular
         .module('clinpharm')
         .controller('DashCtrl', DashCtrl);
 
-    DashCtrl.$inject = ['$scope', '$rootScope', 'Auth', '$location', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$timeout', 'SiteList', 'SetSites', '$localStorage', 'UserService', 'ActivityService', '$sessionStorage', '$ionicHistory', '$state'];
+    DashCtrl.$inject = ['$scope', '$rootScope', 'Auth', '$location', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$timeout', 'SiteList', 'SetSites', '$localStorage', 'UserService', 'ActivityService', '$sessionStorage', '$ionicHistory'];
 
-    function DashCtrl($scope, $rootScope, Auth, $location, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $timeout, SiteList, SetSites, $localStorage, UserService, ActivityService, $sessionStorage, $ionicHistory, $state) {
+    function DashCtrl($scope, $rootScope, Auth, $location, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $timeout, SiteList, SetSites, $localStorage, UserService, ActivityService, $sessionStorage, $ionicHistory) {
 
         var vm = this;
         var siteRef; //var for loading user sites from Firebase. Declare here so can be used in logout
@@ -43,12 +48,16 @@
         vm.firstname = UserService.getFirstname();
         console.log('UserService firstname: ', vm.firstname); //TODO clean up
 
+        console.log('myFirstname:', UserService.myFirstname);
+
         //set user firstname from Userservice (make sure to use vm.prefix in view)
         var fullname = UserService.getFullname();
         console.log('UserService fullname: ', fullname); //TODO clean up
 
         //load list of activities for logged in user
         vm.activities = ActivityService.getUser(userkey);
+
+        console.log('vm.activities: ', vm.activities);
 
         //make ActivityList available to scope (this contains recorded actions for current user)
         vm.activityList = ActivityList;
@@ -66,14 +75,6 @@
 
                 console.log('snapshot: ', snapshot.val()); //TODO clean up
                 vm.siteList = snapshot.val();
-                //make sites available to scope
-                //                vm.siteList = [];
-                //                for (var i = 0; i < snapshot.val().length; i++); {
-                //                    vm.siteList.push({
-                //                        ref: Math.floor(Math.random() * 100001),
-                //                        name: snapshot.val()[i]
-                //                    });
-                //                }
                 console.log('site list for model: ', vm.siteList); //TODO clean up
             });
 

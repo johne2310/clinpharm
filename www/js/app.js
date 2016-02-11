@@ -1,3 +1,5 @@
+// app.js
+
 (function () {
     'user strict';
 
@@ -85,12 +87,12 @@
             }
         })
 
-        .state('tab.chats', {
-                url: '/chats',
+        .state('tab.summary', {
+                url: '/summary',
                 views: {
-                    'tab-chats': {
-                        templateUrl: 'views/chats/tab-chats.html',
-                        controller: 'ChatsCtrl',
+                    'tab-summary': {
+                        templateUrl: 'views/summary/tab-summary.html',
+                        controller: 'SummaryCtrl',
                         controllerAs: 'vm'
                     }
                 }

@@ -1,5 +1,9 @@
+//login.js
+/*global angular */
+/*global Firebase */
+
 /////////////////////////
-// Auth factory
+// Auth factory:
 /////////////////////////
 
 (function () {

@@ -1,3 +1,5 @@
+<!--   tab-dash.html-->
+
 <ion-view view-title="ClinPharm Home" hide-back-button="true" cache-view="false">
     <ion-nav-buttons side="left">
         <a ng-click="vm.logOut()" class="button" nav-clear>Logout</a>
@@ -9,7 +11,7 @@
     <ion-content class="padding-top">
         <h4 align="center">Welcome back {{ vm.firstname }}!</h4>
         <!--        <h4 align="center">Userkey {{ userkey }}!</h4>-->
-        <div class="item item-divider item-balanced" align="center">Totals</div>
+        <div class="item item-divider item-calm" align="center">Totals</div>
         <div>
 
             <div class="row genres">
@@ -33,10 +35,10 @@
                     <span>{{activity.ur}} </span>
                 </p >
 
-				<p>
-				<i class="ion-ios-clock-outline "></i >
-				<span>{{activity.date}}  </span>
-				    <span ng-if="activity.updated" class="item-note"> Updated
+                <p>
+                <i class="ion-ios-clock-outline "></i >
+                <span>{{activity.date}}  </span>
+                    <span ng-if="activity.updated" class="item-note"> Updated
                     </span>
 
                 </p>

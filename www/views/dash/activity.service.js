@@ -1,3 +1,7 @@
+//activity.service.js
+/*global angular */
+/*global Firebase */
+
 (function () {
 
     angular
@@ -10,11 +14,15 @@
 
         var ref = new Firebase('https://clinpharm.firebaseio.com' + '/activity');
 
-        return {
+        var exports = {
             setArray: setArray,
             getUser: getUser,
             getQuery: getQuery
         };
+
+        return exports;
+
+        /////////////////////////////////////////
 
         function setArray() {
             //            return $q.when($firebaseArray(ref));

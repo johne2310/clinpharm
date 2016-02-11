@@ -1,6 +1,9 @@
 (function () {
+    
+/*jslint white:true */
+/*global angular */
 
-    angular
+    angular 
         .module('clinpharm')
         .controller('AccountCtrl', AccountCtrl);
 

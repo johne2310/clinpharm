@@ -1,12 +1,18 @@
+//accountService.js
+
+/*global angular */
+/*global Firebase */
+
+
 (function () {
 
     angular
         .module('clinpharm')
         .factory('SiteList', SiteList);
 
-    SiteList.$inject = ['$rootScope'];
+    SiteList.$inject = [];
 
-    function SiteList($rootScope) {
+    function SiteList() {
 
 
         var siteList = [
@@ -50,9 +56,13 @@
 
     function SetSites($rootScope) {
 
-        return {
+        var exports = {
             setUserSites: setUserSites
         };
+
+        return exports;
+
+        ///////////////////////////////////////////
 
         function setUserSites() {
 
