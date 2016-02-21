@@ -1,4 +1,6 @@
 (function () {
+    /*global angular */
+    /*global Firebase */
 
     angular.module('clinpharm')
         .factory('Auth', function (FURL, $firebaseAuth, $firebaseArray, $firebaseObject, Utils) {
@@ -26,7 +28,7 @@
                     //                .success(function (ref) {
                     //                var id = ref.key();
                     //                    console.log("added record with id " + uid);
-                    usersRef.$indexFor(uid); // returns location in the array
+                    //                    usersRef.$indexFor(uid); // returns location in the array
                     //            });
                 },
 

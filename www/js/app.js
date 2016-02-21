@@ -2,6 +2,7 @@
 
 (function () {
     'user strict';
+    /*global angular */
 
     angular.module('clinpharm', [
     'ionic',
@@ -74,6 +75,18 @@
         })
 
         // Each tab has its own nav history stack:
+
+        .state('tab.home', {
+            cache: false,
+            url: '/home',
+            views: {
+                'tab-home': {
+                    templateUrl: 'views/home/tab-home.html',
+                    controller: 'HomeCtrl',
+                    controllerAs: 'vm'
+                }
+            }
+        })
 
         .state('tab.dash', {
             cache: false,

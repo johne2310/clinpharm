@@ -1,12 +1,12 @@
 //login.js
-/*global angular */
-/*global Firebase */
 
 /////////////////////////
 // Auth factory:
 /////////////////////////
 
 (function () {
+    /*global angular */
+    /*global Firebase */
 
     angular
         .module('clinpharm')

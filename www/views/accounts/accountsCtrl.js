@@ -1,8 +1,6 @@
 (function () {
     
 /*jslint white:true */
-/*global angular */
-
     angular 
         .module('clinpharm')
         .controller('AccountCtrl', AccountCtrl);
@@ -49,7 +47,6 @@
                 }
             });
         }
-
         $scope.$on('$ionicView.enter', function () {
 
             getSites();

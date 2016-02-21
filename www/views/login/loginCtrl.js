@@ -1,3 +1,6 @@
+/*global angular */
+/*global Firebase */
+
 (function () {
 
     angular
@@ -15,15 +18,13 @@
         $rootScope.person = '';
 
         // EMAIL & PASSWORD AUTHENTICATION
-
-
         console.log('Auth is: ', Auth);
         // Check for the user's authentication state
         Auth.$onAuth(function (authData) {
             if (authData) {
                 $rootScope.loggedInUser = authData;
                 console.log('Logged in from onAuth: ', $rootScope.loggedInUser);
-                //                $state.go('tab.home');
+                $state.go('tab.home');
             } else {
                 $scope.loggedInUser = null;
                 console.log('User is logged off.');
@@ -43,7 +44,7 @@
                 $scope.loggedInUser = authData;
                 $rootScope.userId = $scope.loggedInUser.uid;
 
-                myUser.userkey = $scope.loggedInUser.uid;
+                //                myUser.userkey = $scope.loggedInUser.uid;
 
                 //now read users node to get name etc and assigned to $rootscope for use across views
                 var userRef = new Firebase(FURL + '/users');
@@ -52,17 +53,24 @@
                     $rootScope.userkey = snapshot.key();
                     $rootScope.person = snapshot.val().firstname + ' ' + snapshot.val().lastname;
 
+                    myUser = {
+                        firstname: snapshot.val().firstname,
+                        person: snapshot.val().firstname + ' ' + snapshot.val().lastname,
+                        userkey: snapshot.key()
+                    };
+                    $localStorage.myUser = myUser;
+                    console.log('myUser:', $localStorage.myUser);
 
                 }, function (error) {
                     Utils.alertshow("Houston we have a problem!", error);
                     console.log('An error has occured getting user data: ', error);
                 });
 
-                $localStorage.myUser = myUser;
-                console.log('LocalStorage myUser: ', $localStorage.myUser);
+                //                $localStorage.myUser = myUser;
+                //                console.log('LocalStorage myUser: ', $localStorage.myUser);
                 Utils.hide();
                 $timeout(function () {
-                    $state.go('tab.dash');
+                    $state.go('tab.home');
                 }, 500);
 
             }).catch(function (error) {

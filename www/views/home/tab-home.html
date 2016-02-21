@@ -1,0 +1,63 @@
+<!--   tab-dash.html-->
+
+<ion-view view-title="ClinPharm Home" hide-back-button="true" cache-view="false">
+    <ion-nav-buttons side="left">
+        <a ng-click="vm.logOut()" class="button" nav-clear>Logout</a>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <a ng-click="vm.addActivityModal()" class="button button-icon icon ion-ios-plus-outline" nav-clear></a>
+    </ion-nav-buttons>
+
+    <ion-content class="padding-top">
+        <h4 align="center">Welcome back {{ vm.firstname }}!</h4>
+        <!--        <h4 align="center">Userkey {{ userkey }}!</h4>-->
+
+        <div class="list list-inset">
+            <div class="item item-divider item-dark" align="center">
+                <i class="ion-ios-calculator"></i>&nbsp;Totals</div>
+            <div>
+                <div class="row genres">
+                    <div class="col" align="center ">This Week</div>
+                    <div class="col" align="center ">This Month</div>
+                    <div class="col" align="center ">Total</div>
+                </div>
+                <div class="row genres">
+                    <div class="col" align="center ">{{ vm.weekCount }}</div>
+                    <div class="col" align="center ">{{ vm.monthCount }}</div>
+                    <div class="col" align="center ">{{ vm.totalActivity }}</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="list list-inset">
+            <div class="item item-divider item-dark" align="center">
+                <i class="ion-android-person-add"></i>&nbsp;Click button to add new activity
+            </div>
+            <div class="item padding">
+                <button id="review" class="button button-block  button-positive padding" ng-click="vm.setActivity($event)">
+                    Clinical Review
+                </button>
+
+                <button id="discharge" class="button button-block button-calm padding" ng-click="vm.setActivity($event)">
+                    Discharge
+                </button>
+
+                <button id="monitor" class="button button-block button-balanced padding" ng-click="vm.setActivity($event)">
+                    Drug Monitoring
+                </button>
+                <button id="other" class="button button-block button-energized padding" ng-click="vm.setActivity($event)">
+                    Other
+                </button>
+            </div>
+        </div>
+
+
+    </ion-content>
+
+    <script id="showNotes.html" type="text/ng-template">
+        <input type="text" ng-model="contactMessage.text" name="message"> Message {{contactMessage.text}}
+    </script>
+
+
+</ion-view>

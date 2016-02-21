@@ -1,0 +1,40 @@
+<ion-view view-title="Activity Summary">
+    <ion-content>
+        <div class="item item-divider item-calm" align="center">
+            Activity by Site
+        </div>
+        <div>
+
+            <div class="row genres">
+                <div class="col" align="center ">Site</div>
+                <div class="col" align="center ">This Week</div>
+                <div class="col" align="center ">This Month</div>
+                <div class="col" align="center ">Last Month</div>
+            </div>
+            <div class="row genres" ng-repeat="(key, value) in vm.siteCount">
+                <div class="col" align="center ">{{ key }}</div>
+                <div class="col" align="center ">{{ value }}</div>
+                <div class="col" align="center ">{{ vm.totalActivity }}</div>
+                <div class="col" align="center ">{{ vm.monthCount }}</div>
+            </div>
+
+        </div>
+
+        <ion-list>
+            <ion-item ng-repeat="site in vm.siteArray">
+                <!--                Site: {{ site.site }} {{ site.name }}-->
+            </ion-item>
+        </ion-list>
+    </ion-content>
+
+    <!-- Send Message Footer Area -->
+    <ion-footer-bar keyboard-attach class="bar-assertive item-input-inset">
+        <label class="item-input-wrapper">
+            <input type="text" placeholder="Type your message" ng-model="activities.type" />
+        </label>
+        <button class="button button-clear" ng-click="addActivity()">
+            Send
+        </button>
+    </ion-footer-bar>
+
+</ion-view>

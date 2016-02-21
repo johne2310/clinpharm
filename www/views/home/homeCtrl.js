@@ -1,4 +1,4 @@
-//dashCtrl.js
+//homeCtrl.js
 
 
 (function () {
@@ -9,18 +9,17 @@
 
     angular
         .module('clinpharm')
-        .controller('DashCtrl', DashCtrl);
+        .controller('HomeCtrl', HomeCtrl);
 
-    DashCtrl.$inject = ['$scope', '$rootScope', 'Auth', '$location', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$timeout', 'SiteList', 'SetSites', '$localStorage', 'UserService', 'ActivityService', '$sessionStorage', '$ionicHistory', '$ionicScrollDelegate'];
+    HomeCtrl.$inject = ['$scope', '$rootScope', 'Auth', 'UserService', '$location', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$timeout', 'SiteList', 'SetSites', '$localStorage', 'ActivityService', '$sessionStorage', '$ionicHistory'];
 
-    function DashCtrl($scope, $rootScope, Auth, $location, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $timeout, SiteList, SetSites, $localStorage, UserService, ActivityService, $sessionStorage, $ionicHistory, $ionicScrollDelegate) {
+    function HomeCtrl($scope, $rootScope, Auth, UserService, $location, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $timeout, SiteList, SetSites, $localStorage, ActivityService, $sessionStorage, $ionicHistory) {
 
         var vm = this;
         var siteRef; //var for loading user sites from Firebase. Declare here so can be used in logout
         vm.activity = {};
         vm.logOut = logOut;
         vm.addActivityModal = addActivityModal;
-        vm.editActivityModal = editActivityModal;
         vm.deleteActivity = deleteActivity;
         vm.hide = hide;
         vm.cancelActivity = cancelActivity;
@@ -32,24 +31,18 @@
         vm.hideToast = hideToast;
         vm.expandText = expandText;
         vm.showNotes = showNotes;
+        vm.setActivity = setActivity;
+        vm.siteCount = true;
 
         var update;
-
-        //set userkey from UserService
+        var myActivity;
+        var checkedSite; //variable to get first site in sites array and mark as check in modal form
         var userkey;
 
+        //set userkey from UserService
         userkey = UserService.getUserKey();
         console.log('UserService userkey: ', userkey); //TODO clean up
 
-        //set user firstname from Userservice (make sure to use vm.prefix in view)
-        vm.firstname = UserService.getFirstname();
-        console.log('UserService firstname: ', vm.firstname); //TODO clean up
-
-        console.log('myFirstname:', UserService.myFirstname);
-
-        //set user firstname from Userservice (make sure to use vm.prefix in view)
-        var fullname = UserService.getFullname();
-        console.log('UserService fullname: ', fullname); //TODO clean up
 
         //load list of activities for logged in user
         vm.activities = ActivityService.getUserActivities(userkey);
@@ -58,13 +51,21 @@
                 console.log('vm.activities: ', vm.activities);
                 console.log('vm.activities.length: ', vm.activities.length);
                 getCount();
-
             })
-            .catch(function (error) {
-                console.log('An error has occured loading the activities:', error);
+            .catch(function () {
+                console.log('An error has occured loading vm.activities');
             });
 
-        //make ActivityList available to scope (this contains recorded actions for current user)
+
+        //set user firstname from Userservice (make sure to use vm.prefix in view)
+        vm.firstname = UserService.getFirstname();
+        console.log('UserService firstname: ', vm.firstname); //TODO clean up
+
+        //set user firstname from Userservice (make sure to use vm.prefix in view)
+        var fullname = UserService.getFullname();
+        console.log('UserService fullname: ', fullname); //TODO clean up
+
+        //make ActivityList available to scope (this contains activity types (e.g. review, discharge etc)
         vm.activityList = ActivityList;
 
         //load activity counter. needs timeout to ensure data is transfered
@@ -80,7 +81,12 @@
 
                 console.log('snapshot: ', snapshot.val()); //TODO clean up
                 vm.siteList = snapshot.val();
+                if (vm.siteList.length === 1) {
+                    vm.siteCount = false;
+                }
+                checkedSite = vm.siteList[0].name;
                 console.log('site list for model: ', vm.siteList); //TODO clean up
+                console.log('site checked: ', checkedSite); //TODO clean up
             });
 
         });
@@ -102,21 +108,10 @@
             vm.action = 'Add';
             vm.add = true;
             vm.isAdd = true;
-            vm.activity = {
-                name: 'Chart review'
-            };
-            $scope.modal.show();
-        }
-
-        //function for opening modal in 'edit' mode
-        function editActivityModal(activity) {
-            //make a copy of current activity so any edits are not saved if transaction cancelled
-            vm.activity = angular.copy(activity);
-            vm.addDate = Date.parse(vm.activity.date);
-            //            $scope.activity.name = vm.activity.name;
-            vm.action = 'Edit';
-            vm.edit = true;
-            vm.isAdd = false;
+            console.log('activity.name:', myActivity); //TODO Remove.
+            //TODO add default checkmark for site (if only one site is selected - test for length of sites array)
+            vm.activity.name = myActivity;
+            vm.activity.site = checkedSite;
             ActivityService.scrollTop();
             $scope.modal.show();
         }
@@ -131,7 +126,7 @@
         function hide() {
             //ensure option buttons are hidden
             $ionicListDelegate.closeOptionButtons();
-            //            ActivityService.scrollTopList();
+            ActivityService.scrollTopList();
         }
         ////////////////////////////
         //end modal view.
@@ -186,7 +181,9 @@
                 timestamp: new Date().getTime(),
                 notes: vm.activity.notes,
                 site: vm.activity.site,
-                ur: vm.activity.ur
+                ur: vm.activity.ur,
+                dva: vm.activity.dva,
+                highrisk: vm.activity.highrisk
             });
             showToast();
             update = 'add';
@@ -214,12 +211,8 @@
                 vm.activities[getIndex].site = vm.activity.site;
             }
             vm.activities[getIndex].ur = vm.activity.ur;
-            if (vm.activity.dva) {
-                vm.activities[getIndex].dva = vm.activity.dva;
-            }
-            if (vm.activity.highrisk) {
-                vm.activities[getIndex].highrisk = vm.activity.highrisk;
-            }
+            vm.activities[getIndex].dva = vm.activity.dva;
+            vm.activities[getIndex].highrisk = vm.activity.highrisk;
             vm.activities.$save(vm.activities[getIndex]).then(function (ref) {
                 if (ref.key() === vm.activities[getIndex].$id) {
                     showToast();
@@ -243,9 +236,11 @@
             var today = moment().format('DD'); //set variable equal to today's date
             vm.weekCount = 0; //set counter for this week total
             vm.monthCount = 0; //set counter for this month total
+
+
             vm.totalActivity = vm.activities.length; //set total count of activities
 
-            console.log('DashCtrl total activities: ', vm.totalActivity);
+            console.log('HomeCtrl total activities: ', vm.totalActivity);
 
             //loop through activity array and set week and month count
             for (var i = 0; i < vm.activities.length; i++) {
@@ -327,6 +322,30 @@
                     }
                 ]
             });
+        }
+
+        //setActivity function: set activity based on button selection)
+        function setActivity(event) {
+
+            var activityId = event.target.id;
+
+            switch (activityId) {
+
+            case "review":
+                myActivity = 'Chart review';
+                break;
+            case "discharge":
+                myActivity = 'Discharge';
+                break;
+            case "monitor":
+                myActivity = 'Drug monitoring';
+                break;
+            case "other":
+                myActivity = 'Other';
+                break;
+            }
+            console.log('activity:', myActivity);
+            addActivityModal();
         }
 
 

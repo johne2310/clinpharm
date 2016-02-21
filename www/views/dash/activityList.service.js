@@ -20,7 +20,7 @@
                 value: "Discharge"
             },
             {
-                text: "Drug Monitorng",
+                text: "Drug Monitoring",
                 value: "Drug monitoring"
             },
             {

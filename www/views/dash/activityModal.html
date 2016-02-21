@@ -5,61 +5,75 @@
             <button ng-hide="isAdd " ng-click="vm.cancelActivity() " class="button button-icon ion-ios-close-outline "></button>
         </div>
     </ion-header-bar>
-    <ion-content>
+    <ion-content delegate-handle="modalContent">
 
         <!--       Start Date and UR input-->
-        <div class="row item item-balanced">
-            <div class="col 50">&nbsp;&nbsp;&nbsp;&nbsp;<i class="ion-ios-calendar-outline"></i> Select Date</div>
-            <div class="col 50"> &nbsp;&nbsp;&nbsp;&nbsp;<i class="ion-android-person-add"></i> Patient ID</div>
-        </div>
-        <div class="row">
-            <div class="col 50">
+        <div class="list list-inset">
+            <div class="item item-divider item-balanced">
+                <i class="ion-android-person-add"></i>&nbsp;Patient details
+            </div>
+            <div class="item">
+
                 <div>
-                    <label class="item item-input noborder">
-                        <input type="date" placeholder="Date" ng-model="vm.addDate">
+                    <label class="item item-input">
+                        <span class="input-label">Date</span>
+                        <input type="date" ng-model="vm.addDate">
                     </label>
                 </div>
-            </div>
-            <div class="col 50">
-                <ion-list>
-                    <label class="item item-input noborder">
+                <div>
+                    <label class="item item-input">
+                        <span class="input-label">UR</span>
                         <input type="text" placeholder="Enter patient ID" ng-model="vm.activity.ur">
                     </label>
-                </ion-list>
+                </div>
+                <div class="row">
+                    <div class="col-50">
+                        <ion-checkbox class="noborder" ng-model="vm.activity.dva">DVA</ion-checkbox>
+                    </div>
+                    <div class="col-50">
+                        <ion-checkbox class="noborder" ng-model="vm.activity.highrisk">High Risk</ion-checkbox>
+                    </div>
+                </div>
+
             </div>
         </div>
         <!--        End Date and UR input-->
 
         <!--        Start Activity Input-->
-        <div class="item item-balanced ">
-            <i class="ion-compose"></i> Select Activity
+        <div class="list list-inset">
+            <div class="item item-divider item-balanced">
+                <i class="ion-compose"></i>&nbsp;Select Activity
+            </div>
+            <ion-list>
+                <ion-radio name="activities" ng-repeat="item in vm.activityList " ng-value="item.value " ng-model="vm.activity.name"> {{ item.text }}
+                </ion-radio>
+            </ion-list>
         </div>
-        <ion-list>
-            <ion-radio name="activities" ng-repeat="item in vm.activityList " ng-value="item.value " ng-model="vm.activity.name"> {{ item.text }}
-            </ion-radio>
-        </ion-list>
         <!--        End Activity Input-->
 
         <!--        Start Site checkboxes-->
-        <div class="item item-balanced">
-            <i class="ion-ios-medkit-outline"></i> Select Site
+        <div ng-show="vm.siteCount" class="list list-inset">
+            <div class="item item-divider item-balanced">
+                <i class="ion-ios-medkit-outline"></i>&nbsp;Select Site
+            </div>
+            <ion-list>
+                <ion-radio name="sites" ng-repeat="site in vm.siteList track by $index" ng-value="site.name" ng-model="vm.activity.site"> {{ site.name }}
+                </ion-radio>
+            </ion-list>
         </div>
-
-        <ion-list>
-            <ion-radio name="sites" ng-repeat="site in vm.siteList track by $index" ng-value="site.name" ng-model="vm.activity.site"> {{ site.name }}
-            </ion-radio>
-        </ion-list>
         <!--        End Site Input-->
 
         <!--                start notes-->
-        <div class="item item-balanced">
-            <i class="ion-clipboard"></i> Add Notes
-        </div>
-        <div class="item" style="min-height:100px">
-            <label class="item item-input">
-                <!--                    <span class="input-label">Spiritual</span>-->
-                <textarea id="notesId" ng-change="vm.expandText()" ng-keyup="vm.expandText()" placeholder="Notes..." ng-model="vm.activity.notes"></textarea>
-            </label>
+        <div class="list list-inset">
+            <div class="item item-divider item-balanced">
+                <i class="ion-clipboard"></i>&nbsp;Add Notes
+            </div>
+            <div class="item" style="min-height:100px">
+                <label class="item item-input">
+                    <!--                    <span class="input-label">Spiritual</span>-->
+                    <textarea id="notesId" ng-change="vm.expandText()" ng-keyup="vm.expandText()" placeholder="Notes..." ng-model="vm.activity.notes"></textarea>
+                </label>
+            </div>
         </div>
         <!--end journal notes-->
 

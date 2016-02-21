@@ -8,16 +8,18 @@
         .module('clinpharm')
         .factory('ActivityService', ActivityService);
 
-    ActivityService.$inject = ['$firebaseArray'];
+    ActivityService.$inject = ['$firebaseArray', '$ionicScrollDelegate'];
 
-    function ActivityService($firebaseArray) {
+    function ActivityService($firebaseArray, $ionicScrollDelegate) {
 
         var ref = new Firebase('https://clinpharm.firebaseio.com' + '/activity');
 
         var exports = {
             setArray: setArray,
-            getUser: getUser,
-            getQuery: getQuery
+            getUserActivities: getUserActivities,
+            getQuery: getQuery,
+            scrollTop: scrollTop,
+            scrollTopList: scrollTopList
         };
 
         return exports;
@@ -29,7 +31,7 @@
             return $firebaseArray(ref);
         }
 
-        function getUser(userkey) {
+        function getUserActivities(userkey) {
 
             var userQuery = ref
                 .orderByChild('pharmacistId')
@@ -46,38 +48,16 @@
 
             return $firebaseArray(query);
         }
+
+        function scrollTop() {
+            $ionicScrollDelegate.$getByHandle('modalContent').scrollTop(true);
+        }
+
+        function scrollTopList() {
+            $ionicScrollDelegate.$getByHandle('listContent').scrollTop(true);
+        }
+
         //        return ActivityService;
     }
 
 })();
-
-
-//        instantiate new firebase + firebaseArray
-//        var dataRef = new Firebase('https://clinpharm.firebaseio.com/activity');
-//
-//        return $firebaseArray(dataRef);
-
-
-
-
-
-//        var userkey;
-
-//        var ref = new Firebase('https://clinpharm.firebaseio.com' + '/activity');
-//
-//        return {
-//            setArray: setArray,
-//            getUser: getUser
-//        };
-//
-//
-//        function setArray() {
-//            //            return $q.when($firebaseArray(ref));
-//            return $firebaseArray(ref);
-//        }
-//
-//        function getUser(userkey) {
-//            ref
-//                .orderByChild('pharmacistId')
-//                .equalTo(userkey);
-//        }

@@ -1,15 +1,17 @@
 //userservice.js
-/*global angular */
+
 
 (function () {
+    'use strict';
+    /*global angular */
 
     angular
         .module('clinpharm')
         .factory('UserService', UserService);
 
-    function UserService($rootScope) {
+    UserService.$inject = ['$rootScope', '$localStorage'];
 
-        console.log('userservice factory rootscope: ', $rootScope.firstname);
+    function UserService($rootScope, $localStorage) {
 
         var myFirstname = $rootScope.firstname;
 
@@ -24,21 +26,26 @@
 
         /////////////////////////////////
 
-
         //start functions
         function getFirstname() {
-            var myFirstname = $rootScope.firstname;
+            //            var myFirstname = $rootScope.firstname;
+            var myFirstname = $localStorage.myUser.firstname;
+            console.log('Userservice: getFirstname (localstorage): ', $localStorage.myUser.firstname);
             return myFirstname;
         }
 
         function getFullname() {
-            var myFullname = $rootScope.person;
+            //            var myFullname = $rootScope.person;
+            var myFullname = $localStorage.myUser.person;
+            console.log('Userservice: getFullname (localstorage): ', $localStorage.myUser.person);
             return myFullname;
         }
 
         function getUserKey() {
             console.log('Userservice: getUserKey: ', $rootScope.userkey);
-            var userkey = $rootScope.userkey;
+            console.log('Userservice: getUserKey (localstorage): ', $localStorage.myUser.userkey);
+            //            var userkey = $rootScope.userkey;
+            var userkey = $localStorage.myUser.userkey;
             return userkey;
         }
     }
