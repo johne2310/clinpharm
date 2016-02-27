@@ -11,9 +11,9 @@
         .module('clinpharm')
         .controller('HomeCtrl', HomeCtrl);
 
-    HomeCtrl.$inject = ['$scope', '$rootScope', 'Auth', 'UserService', '$location', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$timeout', 'SiteList', 'SetSites', '$localStorage', 'ActivityService', '$sessionStorage', '$ionicHistory'];
+    HomeCtrl.$inject = ['$scope', '$rootScope', 'Auth', 'UserService', '$location', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$timeout', 'SiteList', 'SetSites', '$localStorage', 'ActivityService', '$sessionStorage', '$ionicHistory', '$ionicPlatform', '$localForage'];
 
-    function HomeCtrl($scope, $rootScope, Auth, UserService, $location, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $timeout, SiteList, SetSites, $localStorage, ActivityService, $sessionStorage, $ionicHistory) {
+    function HomeCtrl($scope, $rootScope, Auth, UserService, $location, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $timeout, SiteList, SetSites, $localStorage, ActivityService, $sessionStorage, $ionicHistory, $ionicPlatform, $localForage) {
 
         var vm = this;
         var siteRef; //var for loading user sites from Firebase. Declare here so can be used in logout
@@ -38,32 +38,34 @@
         var myActivity;
         var checkedSite; //variable to get first site in sites array and mark as check in modal form
         var userkey;
-
-        //set userkey from UserService
-        userkey = UserService.getUserKey();
-        console.log('UserService userkey: ', userkey); //TODO clean up
+        var fullname;
 
 
-        //load list of activities for logged in user
-        vm.activities = ActivityService.getUserActivities(userkey);
-        vm.activities.$loaded()
-            .then(function () {
-                console.log('vm.activities: ', vm.activities);
-                console.log('vm.activities.length: ', vm.activities.length);
-                getCount();
-            })
-            .catch(function () {
-                console.log('An error has occured loading vm.activities');
+        $ionicPlatform.ready(function () {
+            // will execute when device is ready, or immediately if the device is already ready.
+            console.log('ionic is ready:');
+            //set userkey from UserService
+
+            $localForage.getItem('myUser').then(function (data) {
+                userkey = data.userkey;
+                vm.firstname = data.firstname;
+                fullname = data.person;
+                console.log('locaForage userkey (home):', userkey);
+                console.log('locaForage firstname (home):', vm.firstname);
+                console.log('locaForage fullname (home):', fullname);
+                //load list of activities for logged in user
+                vm.activities = ActivityService.getUserActivities(userkey);
+                vm.activities.$loaded()
+                    .then(function () {
+                        console.log('vm.activities (home): ', vm.activities);
+                        console.log('vm.activities.length (home): ', vm.activities.length);
+                        getCount();
+                    })
+                    .catch(function () {
+                        console.log('An error has occured loading vm.activities');
+                    });
             });
-
-
-        //set user firstname from Userservice (make sure to use vm.prefix in view)
-        vm.firstname = UserService.getFirstname();
-        console.log('UserService firstname: ', vm.firstname); //TODO clean up
-
-        //set user firstname from Userservice (make sure to use vm.prefix in view)
-        var fullname = UserService.getFullname();
-        console.log('UserService fullname: ', fullname); //TODO clean up
+        });
 
         //make ActivityList available to scope (this contains activity types (e.g. review, discharge etc)
         vm.activityList = ActivityList;
@@ -83,6 +85,8 @@
                 vm.siteList = snapshot.val();
                 if (vm.siteList.length === 1) {
                     vm.siteCount = false;
+                } else {
+                    vm.siteCount = true;
                 }
                 checkedSite = vm.siteList[0].name;
                 console.log('site list for model: ', vm.siteList); //TODO clean up
@@ -147,6 +151,10 @@
                 // Do... Whatever it is you do (if needed)
                 $location.path("/login");
             });
+            //clear localForage
+            $localForage.clear().then(function () {
+                console.log('localForage cleared.');
+            });
             console.log('Log out successful.');
         }
 
@@ -170,6 +178,12 @@
             }
             if (!vm.activity.site) {
                 vm.activity.site = false;
+            }
+            if (!vm.activity.dva) {
+                vm.activity.dva = false;
+            }
+            if (!vm.activity.highrisk) {
+                vm.activity.highrisk = false;
             }
 
             vm.activities.$add({

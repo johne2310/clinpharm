@@ -9,16 +9,15 @@
         .module('clinpharm')
         .factory('UserService', UserService);
 
-    UserService.$inject = ['$rootScope', '$localStorage'];
+    UserService.$inject = ['$rootScope', '$localStorage', '$q', '$localForage'];
 
-    function UserService($rootScope, $localStorage) {
+    function UserService($rootScope, $localStorage, $q, $localForage) {
 
         var myFirstname = $rootScope.firstname;
 
         var exports = {
             getFirstname: getFirstname,
             getFullname: getFullname,
-            getUserKey: getUserKey,
             myFirstname: myFirstname
         };
 
@@ -29,25 +28,46 @@
         //start functions
         function getFirstname() {
             //            var myFirstname = $rootScope.firstname;
-            var myFirstname = $localStorage.myUser.firstname;
-            console.log('Userservice: getFirstname (localstorage): ', $localStorage.myUser.firstname);
-            return myFirstname;
+            var myFirstname;
+            if ($localStorage.myUser !== undefined) {
+                myFirstname = $localStorage.myUser.firstname;
+            } else {
+                myFirstname = $rootScope.firstname;
+            }
+
+            //            console.log('Userservice: getFirstname (localstorage): ', $localStorage.myUser.firstname);
+            return $q.when(myFirstname);
         }
 
         function getFullname() {
-            //            var myFullname = $rootScope.person;
-            var myFullname = $localStorage.myUser.person;
-            console.log('Userservice: getFullname (localstorage): ', $localStorage.myUser.person);
-            return myFullname;
+            var myFullname;
+            if ($localStorage.myUser !== undefined) {
+                myFullname = $localStorage.myUser.person;
+            } else {
+                myFullname = $rootScope.person;
+            }
+            return $q.when(myFullname);
         }
 
-        function getUserKey() {
-            console.log('Userservice: getUserKey: ', $rootScope.userkey);
-            console.log('Userservice: getUserKey (localstorage): ', $localStorage.myUser.userkey);
-            //            var userkey = $rootScope.userkey;
-            var userkey = $localStorage.myUser.userkey;
-            return userkey;
-        }
+
+        //        function getUserKey() {
+        //            var userkey;
+        //            return $q(function (resolve, reject) {
+        //                if ($localStorage.myUser.userkey === undefined) {
+        //                    userkey = $rootScope.userkey;
+        //                    console.log('localstorage does not exist');
+        //                } else {
+        //                    console.log('localstorage exists');
+        //                    userkey = $localStorage.myUser.userkey;
+        //                    console.log('Userservice: getUserKey (localstorage - factory): ', $localStorage.myUser.userkey);
+        //                    resolve(userkey);
+        //                    //                    return userkey;
+        //                }
+        //
+        //            });
+        //        }
+
+
     }
 
 })();

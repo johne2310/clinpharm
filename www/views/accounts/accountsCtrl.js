@@ -1,18 +1,24 @@
 (function () {
-    
-/*jslint white:true */
-    angular 
+
+    /*jslint white:true */
+    /*global Firebase */
+    /*global angular */
+
+    angular
         .module('clinpharm')
         .controller('AccountCtrl', AccountCtrl);
 
-    AccountCtrl.$inject = ['$scope', '$rootScope', '$state', 'SiteList', 'Utils', 'SetSites', '$timeout'];
+    AccountCtrl.$inject = ['$scope', '$rootScope', '$state', 'SiteList', 'Utils', 'SetSites', '$timeout', '$localForage', 'Auth', '$ionicHistory', '$location'];
 
-    function AccountCtrl($scope, $rootScope, $state, SiteList, Utils, SetSites, $timeout) {
+    function AccountCtrl($scope, $rootScope, $state, SiteList, Utils, SetSites, $timeout, $localForage, Auth, $ionicHistory, $location) {
 
         var vm = this;
         vm.setSites = setSites;
         vm.getSites = getSites;
         vm.cancelSetting = cancelSetting;
+        vm.logOut = logOut;
+        var userkey;
+        var userRef;
 
         function getSites() {
 
@@ -69,20 +75,28 @@
                 }
             }
 
+
             //set Firebase reference
-            vm.userRef = new Firebase('https://clinpharm.firebaseio.com/users/' + $scope.userkey + '/sites'); //CHANGE get userkey from factory
-            //set Firebase callback for site sync
-            var onComplete = function (error) {
-                if (error) {
-                    console.log('Synchronization failed');
-                    Utils.alertshow("Houston we have a problem!", error);
-                } else {
-                    console.log('Synchronization succeeded');
-                    $state.go('tab.dash');
-                }
-            };
-            //save result to Fireabase
-            vm.userRef.set(p, onComplete);
+
+            $localForage.getItem('myUser').then(function (data) {
+                userkey = data.userkey;
+                userRef = new Firebase('https://clinpharm.firebaseio.com/users/' + userkey + '/sites');
+                console.log('userRef (accounts):', userRef);
+                //save result to Fireabase
+
+                //first set Firebase callback for site sync
+                var onComplete = function (error) {
+                    if (error) {
+                        console.log('Synchronization failed');
+                        Utils.alertshow("Houston we have a problem!", error);
+                    } else {
+                        console.log('Synchronization succeeded');
+                        $state.go('tab.dash');
+                    }
+                };
+                //save result to Fireabase
+                userRef.set(p, onComplete);
+            });
         }
         //end setSites
 
@@ -94,7 +108,24 @@
             $state.go('tab.dash');
         }
 
+        ///////////////////////////
+        //function to deauthorise firebase connection
+        ///////////////////////////
+        function logOut() {
+            // set logged status to facilitate destruction of firebaseObject in loginCtrl
+            Auth.status = "loggedOut";
+            //call Auth factory logout method to de-authorise firebase connection
+            Auth.$unauth();
 
+            $ionicHistory.clearCache().then(function () {
+                $location.path("/login");
+            });
+            //clear localForage
+            $localForage.clear().then(function () {
+                console.log('localForage cleared.');
+            });
+            console.log('Log out successful.');
+        }
 
     } //end controller
 

@@ -11,9 +11,9 @@
         .module('clinpharm')
         .controller('DashCtrl', DashCtrl);
 
-    DashCtrl.$inject = ['$scope', '$rootScope', 'Auth', '$location', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$timeout', 'SiteList', 'SetSites', '$localStorage', 'UserService', 'ActivityService', '$sessionStorage', '$ionicHistory', '$ionicScrollDelegate'];
+    DashCtrl.$inject = ['$scope', '$rootScope', 'Auth', '$location', '$ionicModal', '$ionicListDelegate', 'ActivityList', 'ionicToast', '$ionicPopup', '$timeout', 'SiteList', 'SetSites', '$localStorage', 'UserService', 'ActivityService', '$sessionStorage', '$ionicHistory', '$ionicPlatform', '$localForage'];
 
-    function DashCtrl($scope, $rootScope, Auth, $location, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $timeout, SiteList, SetSites, $localStorage, UserService, ActivityService, $sessionStorage, $ionicHistory, $ionicScrollDelegate) {
+    function DashCtrl($scope, $rootScope, Auth, $location, $ionicModal, $ionicListDelegate, ActivityList, ionicToast, $ionicPopup, $timeout, SiteList, SetSites, $localStorage, UserService, ActivityService, $sessionStorage, $ionicHistory, $ionicPlatform, $localForage) {
 
         var vm = this;
         var siteRef; //var for loading user sites from Firebase. Declare here so can be used in logout
@@ -34,35 +34,38 @@
         vm.showNotes = showNotes;
 
         var update;
+        var checkedSite;
+        var fullname;
 
         //set userkey from UserService
         var userkey;
 
-        userkey = UserService.getUserKey();
-        console.log('UserService userkey: ', userkey); //TODO clean up
+        //set userkey from UserService
+        $ionicPlatform.ready(function () {
+            // will execute when device is ready, or immediately if the device is already ready.
+            console.log('ionic is ready:');
+            //set userkey from UserService
 
-        //set user firstname from Userservice (make sure to use vm.prefix in view)
-        vm.firstname = UserService.getFirstname();
-        console.log('UserService firstname: ', vm.firstname); //TODO clean up
-
-        console.log('myFirstname:', UserService.myFirstname);
-
-        //set user firstname from Userservice (make sure to use vm.prefix in view)
-        var fullname = UserService.getFullname();
-        console.log('UserService fullname: ', fullname); //TODO clean up
-
-        //load list of activities for logged in user
-        vm.activities = ActivityService.getUserActivities(userkey);
-        vm.activities.$loaded()
-            .then(function () {
-                console.log('vm.activities: ', vm.activities);
-                console.log('vm.activities.length: ', vm.activities.length);
-                getCount();
-
-            })
-            .catch(function (error) {
-                console.log('An error has occured loading the activities:', error);
+            $localForage.getItem('myUser').then(function (data) {
+                userkey = data.userkey;
+                vm.firstname = data.firstname;
+                vm.fullname = data.person;
+                console.log('locaForage userkey (home):', userkey);
+                console.log('locaForage firstname (home):', vm.firstname);
+                console.log('locaForage fullname (home):', vm.fullname);
+                //load list of activities for logged in user
+                vm.activities = ActivityService.getUserActivities(userkey);
+                vm.activities.$loaded()
+                    .then(function () {
+                        console.log('vm.activities (home): ', vm.activities);
+                        console.log('vm.activities.length (home): ', vm.activities.length);
+                        getCount();
+                    })
+                    .catch(function () {
+                        console.log('An error has occured loading vm.activities');
+                    });
             });
+        });
 
         //make ActivityList available to scope (this contains recorded actions for current user)
         vm.activityList = ActivityList;
@@ -80,7 +83,14 @@
 
                 console.log('snapshot: ', snapshot.val()); //TODO clean up
                 vm.siteList = snapshot.val();
+                if (vm.siteList.length === 1) {
+                    vm.siteCount = false;
+                } else {
+                    vm.siteCount = true;
+                }
+                checkedSite = vm.siteList[0].name;
                 console.log('site list for model: ', vm.siteList); //TODO clean up
+                console.log('site checked: ', checkedSite); //TODO clean up
             });
 
         });
@@ -147,10 +157,12 @@
             //call Auth factory logout method to de-authorise firebase connection
             Auth.$unauth();
 
-            //            $window.location.reload(); // CHANGE Remove
             $ionicHistory.clearCache().then(function () {
-                // Do... Whatever it is you do (if needed)
                 $location.path("/login");
+            });
+            //clear localForage
+            $localForage.clear().then(function () {
+                console.log('localForage cleared.');
             });
             console.log('Log out successful.');
         }
@@ -175,6 +187,12 @@
             }
             if (!vm.activity.site) {
                 vm.activity.site = false;
+            }
+            if (!vm.activity.dva) {
+                vm.activity.dva = false;
+            }
+            if (!vm.activity.highrisk) {
+                vm.activity.highrisk = false;
             }
 
             vm.activities.$add({

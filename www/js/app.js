@@ -10,7 +10,8 @@
     'ngCordova',
     'firebase',
     'ngMessages',
-    'ionic-toast'
+    'ionic-toast',
+    'LocalForageModule'
 ])
 
     // Changue this for your Firebase App URL.
@@ -32,23 +33,23 @@
         });
     })
 
-    .config(function ($stateProvider, $urlRouterProvider) {
+    .config(function ($stateProvider, $urlRouterProvider, $localForageProvider) {
 
-        // Ionic uses AngularUI Router which uses the concept of states
-        // Learn more here: https://github.com/angular-ui/ui-router
-        // Set up the various states which the app can be in.
-        // Each state's controller can be found in controllers.js
+        $localForageProvider.config({
+            name: 'clinPharm', // name of the database and prefix for your data, it is "lf" by default
+            version: 1.0, // version of the database, you shouldn't have to use this
+            storeName: 'startup', // name of the table
+            description: 'ClinPharm App'
+        });
+
         $stateProvider
-
-
-        //opening page and login
-            .state('login', {
-            cache: false,
-            url: '/login',
-            templateUrl: 'views/login/login.html',
-            controller: 'loginCtrl',
-            controllerAs: 'vm'
-        })
+            .state('login', { //opening page and login
+                cache: false,
+                url: '/login',
+                templateUrl: 'views/login/login.html',
+                controller: 'loginCtrl',
+                controllerAs: 'vm'
+            })
 
         //register page
         .state('register', {

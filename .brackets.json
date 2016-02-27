@@ -1,5 +1,15 @@
 {
     "jscodehints.detectedExclusions": [
-
+        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/lodash/vendor/firebug-lite/src/firebug-lite-debug.js",
+        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/lodash/vendor/json-js/json2.js",
+        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/lodash/vendor/underscore/test/arrays.js",
+        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/lodash/vendor/underscore/test/chaining.js",
+        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/lodash/vendor/underscore/test/collections.js",
+        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/lodash/vendor/backbone/backbone.js",
+        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/lodash/vendor/benchmark.js/benchmark.js",
+        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/lodash/vendor/backbone/test/events.js",
+        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/lodash/vendor/underscore/test/functions.js",
+        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/lodash/vendor/underscore/test/objects.js",
+        "C:/Users/john.evans/Documents/Apps/Ionic/clinpharm/platforms/android/assets/www/lib/lodash/vendor/underscore/underscore.js"
     ]
 }

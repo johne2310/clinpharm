@@ -54,7 +54,7 @@
         //function to siteCount object for counting activity per site
         function getSiteActivityCount() {
 
-            var newCount = [];
+            newCount = [];
             var newMonthCount = [];
 
             return $q(function (resolve) {
@@ -96,7 +96,7 @@
 
 
                     });
-                    //iterate newCoumt array using lodash to count activities per site
+                    //iterate newCount array using lodash to count activities per site
                     siteCount = _.countBy(newCount, _.identity);
                     var monthCount = _.countBy(newMonthCount, function (obj) {
                         return obj.site;
@@ -105,7 +105,7 @@
                     console.log('Site count: ', siteCount);
                     console.log('monthCount:', monthCount);
                     console.log('siteCountArray:', siteCountArray);
-                    resolve(siteCount);
+                    resolve(siteCount, monthCount); //siteCount
 
                 });
 

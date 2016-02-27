@@ -14,15 +14,15 @@
         <div class="item item-divider item-calm" align="center">Totals</div>
         <div>
 
-            <div class="row genres">
-                <div class="col " align="center ">This Week</div>
-                <div class="col " align="center ">This Month</div>
-                <div class="col " align="center ">Total</div>
+            <div class="row genres" align="center">
+                <div class="col " align="center">This Week</div>
+                <div class="col " align="center">This Month</div>
+                <div class="col " align="center">Total</div>
             </div>
-            <div class="row genres">
-                <div class="col " align="center ">{{ vm.weekCount }}</div>
-                <div class="col " align="center ">{{ vm.monthCount }}</div>
-                <div class="col " align="center ">{{ vm.totalActivity }}</div>
+            <div class="row genres" align="center">
+                <div class="col " align="center">{{ vm.weekCount }}</div>
+                <div class="col " align="center">{{ vm.monthCount }}</div>
+                <div class="col " align="center">{{ vm.totalActivity }}</div>
             </div>
         </div>
 
@@ -37,8 +37,8 @@
                 <p>
                     <i class="ion-android-person positive"></i >
                     <span>{{activity.ur}}  </span>
-                    <span ng-if="activity.dva">&nbsp;&nbsp;<i class="ion-ios-star balanced"></i >&nbsp;&nbsp;DVA</span>
-                    <span ng-if="activity.highrisk">&nbsp;&nbsp;<i class="ion-flag assertive"></i >&nbsp;&nbsp;High Risk </span>
+                    <span ng-if="activity.dva">&nbsp;&nbsp;<i class="ion-ios-star balanced"></i >&nbsp;DVA</span>
+                    <span ng-if="activity.highrisk">&nbsp;&nbsp;<i class="ion-flag assertive"></i >&nbsp;High Risk </span>
                     <span ng-if="activity.updated" class="item-note assertive"> Updated
                     </span>
                 </p>

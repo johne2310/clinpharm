@@ -4,7 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <!--<meta http-equiv="Content-Security-Policy" content="default-src *; style-src &apos;self&apos; &apos;unsafe-inline&apos;; script-src &apos;self&apos; https://cdn.firebase.com https://clinpharm.firebaseio.com &apos;unsafe-inline&apos; &apos;unsafe-eval&apos;">-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src *; style-src &apos;self&apos; &apos;unsafe-inline&apos;; script-src &apos;self&apos; https://cdn.firebase.com https://clinpharm.firebaseio.com https://clinpharm.firebaseapp.com &apos;unsafe-inline&apos; &apos;unsafe-eval&apos;">-->
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src &apos;self&apos; &apos;unsafe-inline&apos;; script-src * &apos;unsafe-inline&apos; &apos;unsafe-eval&apos;">
     <title></title>
 
 
@@ -60,6 +62,11 @@
     <script src="lib/ionic-toast/dist/ionic-toast.bundle.min.js"></script>
     <!--    lodash-->
     <script src="lib/lodash/lodash.js"></script>
+    <!--    localForage-->
+    <script src="lib/localforage/dist/localforage.js"></script>
+    <script src="lib/angular-localforage/dist/angular-localForage.js"></script>
+
+
 </head>
 
 <body ng-app="clinpharm">
