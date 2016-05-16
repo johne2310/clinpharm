@@ -68,7 +68,7 @@
                 //TODO implement logout from Auth
                 //                function logOut() {
                 //            // set logged status to facilitate destruction of firebaseObject in loginCtrl
-                //            Auth.status = "loggedOut";
+                //            lo = "loggedOut";
                 //            //call Auth factory logout method to de-authorise firebase connection
                 //
                 //            //            $window.location.reload(); // CHANGE Remove

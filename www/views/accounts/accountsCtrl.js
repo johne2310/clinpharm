@@ -1,4 +1,4 @@
-(function () {
+(function() {
 
     /*jslint white:true */
     /*global Firebase */
@@ -22,38 +22,44 @@
 
         function getSites() {
 
-            //set variable from factory Firebase ref
-            var siteRef = new Firebase('https://clinpharm.firebaseio.com/users/' + $rootScope.userkey + '/sites'); //SetSites;
+            $localForage.getItem('myUser').then(function(data) {
+                userkey = data.userkey;
+                console.log('userkey (summary):', userkey);
 
-            //make list of sites available to scope (from factory)
-            vm.siteList = SiteList;
+                //set variable from factory Firebase ref
+                var siteRef = new Firebase('https://clinpharm.firebaseio.com/users/' + userkey + '/sites'); //SetSites;
 
-            //set all checked to false
-            for (var c = 0; c < vm.siteList.length; c++) {
-                console.log('Setting checked to false');
-                vm.siteList[c].checked = false;
-            }
+                //make list of sites available to scope (from factory)
+                vm.siteList = SiteList;
 
-            siteRef.on('value', function (snapshot) {
+                //set all checked to false
+                for (var c = 0; c < vm.siteList.length; c++) {
+                    console.log('Setting checked to false');
+                    vm.siteList[c].checked = false;
+                }
 
-                //iterate siteList and Firebase sites node and mark matches as checked = true
-                //first time Freibase sites will be empty (zero length)
+                siteRef.on('value', function(snapshot) {
 
-                if (snapshot.exists()) {
+                    //iterate siteList and Firebase sites node and mark matches as checked = true
+                    //first time Freibase sites will be empty (zero length)
 
-                    for (var s = 0; s < vm.siteList.length; s++) {
-                        for (var f = 0; f < snapshot.val().length; f++) {
-                            if (vm.siteList[s].text === snapshot.val()[f].name) {
-                                vm.siteList[s].checked = true; //set sites to be marked as checked in siteList
+                    if (snapshot.exists()) {
+
+                        for (var s = 0; s < vm.siteList.length; s++) {
+                            for (var f = 0; f < snapshot.val().length; f++) {
+                                if (vm.siteList[s].text === snapshot.val()[f].name) {
+                                    vm.siteList[s].checked = true; //set sites to be marked as checked in siteList
+                                }
                             }
                         }
+                    } else {
+                        Utils.alertshow('Please select your site/s');
                     }
-                } else {
-                    Utils.alertshow('Please select your site/s');
-                }
+                });
             });
         }
-        $scope.$on('$ionicView.enter', function () {
+
+        $scope.$on('$ionicView.enter', function() {
 
             getSites();
 
@@ -78,14 +84,14 @@
 
             //set Firebase reference
 
-            $localForage.getItem('myUser').then(function (data) {
+            $localForage.getItem('myUser').then(function(data) {
                 userkey = data.userkey;
                 userRef = new Firebase('https://clinpharm.firebaseio.com/users/' + userkey + '/sites');
                 console.log('userRef (accounts):', userRef);
                 //save result to Fireabase
 
                 //first set Firebase callback for site sync
-                var onComplete = function (error) {
+                var onComplete = function(error) {
                     if (error) {
                         console.log('Synchronization failed');
                         Utils.alertshow("Houston we have a problem!", error);
@@ -117,11 +123,11 @@
             //call Auth factory logout method to de-authorise firebase connection
             Auth.$unauth();
 
-            $ionicHistory.clearCache().then(function () {
+            $ionicHistory.clearCache().then(function() {
                 $location.path("/login");
             });
             //clear localForage
-            $localForage.clear().then(function () {
+            $localForage.clear().then(function() {
                 console.log('localForage cleared.');
             });
             console.log('Log out successful.');

@@ -16,10 +16,11 @@
     function Summary($firebaseArray, $q) {
 
         //set variables
-
+        var vm = this;
         var ref = new Firebase('https://clinpharm.firebaseio.com/activity');
         var siteArray = [1, 2, 3, 4];
-        var newCount = [];
+        vm.newCount = [];
+        var newMonthCount = [];
         var siteCount = {};
         var siteCountArray = [];
 
@@ -42,6 +43,7 @@
         var exports = {
             getSiteActivityCount: getSiteActivityCount,
             siteArray: siteArray,
+            workingArrays: workingArrays,
             today: today
         };
 
@@ -49,68 +51,137 @@
         /////////////////////
 
 
+        function workingArrays() {
+            //            newCount = [];
+            //            var newMonthCount = [];
+
+            //load firebase ref in firebaseArray
+            siteArray = $firebaseArray(ref);
+            //ensure siteArray is loaded (deal with async)
+            siteArray.$loaded().then(function () {
+
+                console.log('SiteArray from Summary factory', siteArray);
+                //iterate through array and add  site name to a new array (from which we can then count instances)
+                angular.forEach(siteArray, function (value) {
+                    if (value.site === undefined) { // TODO: remove from final version
+                        value.site = 'Not recorded';
+                    }
+
+                    //convert activty date to unix
+                    var activityDate = moment(Date.parse(value.date)).unix();
+                    console.log('Date:', activityDate);
+                    var thisWeek = Math.round((activityDate - lastSunday) / unixToDays);
+                    console.log('thisWeek:', thisWeek);
+                    
+                    if (thisWeek >= 0 && thisWeek < 7) {
+                        console.log('This week');
+                        //add site names to newCount array (in preparation for counting)
+
+                        //FIXME: use 'this week' counter in this section then push to array after if/else
+                        vm.newCount.push(
+                            value.site
+                        );
+                        console.log('newCount (from workingArrays): ', vm.newCount);
+                        return (vm.newCount);
+
+                    } else {
+                        //FIXME: use 'this week' counter in this section then push to array after if/else
+
+                        console.log('Not This week');
+                        newMonthCount.push({
+                            site: value.site,
+                            name: value.name
+                        });
+
+                    }
+                });
+            });
+
+        } //end workArray function
+
+
+
+        function getSiteActivityCount() {
+
+            return $q(function (resolve) {
+                console.log('Starting workArrays');
+                var x = new workingArrays();
+                console.log('newCount (from getSiteActivityCount): ', x.newCount);
+                console.log('workArrays completed');
+                siteCount = _.countBy(x.newCount, _.identity);
+                var monthCount = _.countBy(newMonthCount, function (obj) {
+                    return obj.site;
+                });
+                siteCountArray = _.toArray(newMonthCount);
+                console.log('Site count: ', siteCount);
+                console.log('monthCount:', monthCount);
+                console.log('siteCountArray:', siteCountArray);
+                resolve(siteCount); //siteCount
+            });
+        }
+
+
 
 
         //function to siteCount object for counting activity per site
-        function getSiteActivityCount() {
-
-            newCount = [];
-            var newMonthCount = [];
-
-            return $q(function (resolve) {
-                //load firebase ref in firebaseArray
-                siteArray = $firebaseArray(ref);
-                //ensure siteArray is loaded (deal with async)
-                siteArray.$loaded().then(function () {
-
-                    console.log('SiteArray from Summary factory', siteArray);
-                    //iterate through array and add  site name to a new array (from which we can then count instances)
-                    angular.forEach(siteArray, function (value) {
-                        if (value.site === undefined) { //TODO remove from final version
-                            value.site = 'Not recorded';
-                        }
-
-                        //convert activty date to unix
-                        var activityDate = moment(Date.parse(value.date)).unix();
-                        console.log('Date:', activityDate);
-                        var thisWeek = Math.round((activityDate - lastSunday) / unixToDays);
-                        console.log('thisWeek:', thisWeek);
-
-                        if (thisWeek >= 0 && thisWeek < 7) {
-                            console.log('This week');
-                            //add site names to newCount array (in preparation for counting)
-
-                            //FIXME: use 'this week' counter in this section then push to array after if/else
-                            newCount.push(
-                                value.site
-                            );
-                        } else {
-                            //FIXME: use 'this week' counter in this section then push to array after if/else
-
-                            console.log('Not This week');
-                            newMonthCount.push({
-                                site: value.site,
-                                name: value.name
-                            });
-                        }
-
-
-                    });
-                    //iterate newCount array using lodash to count activities per site
-                    siteCount = _.countBy(newCount, _.identity);
-                    var monthCount = _.countBy(newMonthCount, function (obj) {
-                        return obj.site;
-                    });
-                    siteCountArray = _.toArray(newMonthCount);
-                    console.log('Site count: ', siteCount);
-                    console.log('monthCount:', monthCount);
-                    console.log('siteCountArray:', siteCountArray);
-                    resolve(siteCount, monthCount); //siteCount
-
-                });
-
-            });
-        } //end getSiteActivityCount
+        //        function getSiteActivityCount() {
+        //            newCount = [];
+        //            var newMonthCount = [];
+        //
+        //            return $q(function (resolve) {
+        //                //load firebase ref in firebaseArray
+        //                siteArray = $firebaseArray(ref);
+        //                //ensure siteArray is loaded (deal with async)
+        //                siteArray.$loaded().then(function () {
+        //
+        //                    console.log('SiteArray from Summary factory', siteArray);
+        //                    //iterate through array and add  site name to a new array (from which we can then count instances)
+        //                    angular.forEach(siteArray, function (value) {
+        //                        if (value.site === undefined) { //TODO: remove from final version
+        //                            value.site = 'Not recorded';
+        //                        }
+        //
+        //                        //convert activty date to unix
+        //                        var activityDate = moment(Date.parse(value.date)).unix();
+        //                        console.log('Date:', activityDate);
+        //                        var thisWeek = Math.round((activityDate - lastSunday) / unixToDays);
+        //                        console.log('thisWeek:', thisWeek);
+        //
+        //                        if (thisWeek >= 0 && thisWeek < 7) {
+        //                            console.log('This week');
+        //                            //add site names to newCount array (in preparation for counting)
+        //
+        //                            //FIXME: use 'this week' counter in this section then push to array after if/else
+        //                            newCount.push(
+        //                                value.site
+        //                            );
+        //                        } else {
+        //                            //FIXME: use 'this week' counter in this section then push to array after if/else
+        //
+        //                            console.log('Not This week');
+        //                            newMonthCount.push({
+        //                                site: value.site,
+        //                                name: value.name
+        //                            });
+        //                        }
+        //
+        //
+        //                    });
+        //                    //iterate newCount array using lodash to count activities per site
+        //                    siteCount = _.countBy(newCount, _.identity);
+        //                    var monthCount = _.countBy(newMonthCount, function (obj) {
+        //                        return obj.site;
+        //                    });
+        //                    siteCountArray = _.toArray(newMonthCount);
+        //                    console.log('Site count: ', siteCount);
+        //                    console.log('monthCount:', monthCount);
+        //                    console.log('siteCountArray:', siteCountArray);
+        //                    resolve(siteCount, monthCount); //siteCount
+        //
+        //                });
+        //
+        //            });
+        //        } //end getSiteActivityCount
 
     } //end factory
 })();

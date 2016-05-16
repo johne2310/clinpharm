@@ -44,8 +44,8 @@
         $ionicPlatform.ready(function () {
             // will execute when device is ready, or immediately if the device is already ready.
             console.log('ionic is ready:');
-            //set userkey from UserService
 
+            //set userkey from localForage because home view is being called before the factory (i.e. being routed directly on login)
             $localForage.getItem('myUser').then(function (data) {
                 userkey = data.userkey;
                 vm.firstname = data.firstname;
@@ -81,7 +81,7 @@
             siteRef = SetSites.setUserSites();
             siteRef.on('value', function (snapshot) {
 
-                console.log('snapshot: ', snapshot.val()); //TODO clean up
+                console.log('snapshot: ', snapshot.val()); //TODO: clean up
                 vm.siteList = snapshot.val();
                 if (vm.siteList.length === 1) {
                     vm.siteCount = false;
@@ -89,8 +89,8 @@
                     vm.siteCount = true;
                 }
                 checkedSite = vm.siteList[0].name;
-                console.log('site list for model: ', vm.siteList); //TODO clean up
-                console.log('site checked: ', checkedSite); //TODO clean up
+                console.log('site list for model: ', vm.siteList); //TODO: clean up
+                console.log('site checked: ', checkedSite); //TODO: clean up
             });
 
         });
@@ -136,7 +136,6 @@
         //end modal view.
         ////////////////////////////
 
-
         ///////////////////////////
         //function to deauthorise firebase connection
         ///////////////////////////
@@ -146,7 +145,6 @@
             //call Auth factory logout method to de-authorise firebase connection
             Auth.$unauth();
 
-            //            $window.location.reload(); // CHANGE Remove
             $ionicHistory.clearCache().then(function () {
                 // Do... Whatever it is you do (if needed)
                 $location.path("/login");

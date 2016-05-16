@@ -16,6 +16,7 @@
         var myFirstname = $rootScope.firstname;
 
         var exports = {
+            getUserKey: getUserKey,
             getFirstname: getFirstname,
             getFullname: getFullname,
             myFirstname: myFirstname
@@ -49,6 +50,13 @@
             return $q.when(myFullname);
         }
 
+        function getUserKey() {
+            $localForage.getItem('myUser').then(function (data) {
+                var userkey = data.userkey;
+                console.log('UserKey from GetUserKey: ', userkey);
+                return userkey;
+            });
+        }
 
         //        function getUserKey() {
         //            var userkey;

@@ -11,9 +11,9 @@
         .module('clinpharm')
         .controller('SummaryCtrl', SummaryCtrl);
 
-    SummaryCtrl.$inject = ['$scope', 'Summary', '$timeout'];
+    SummaryCtrl.$inject = ['$scope', 'Summary'];
 
-    function SummaryCtrl($scope, Summary, $timeout) {
+    function SummaryCtrl($scope, Summary) {
 
         var vm = this;
 

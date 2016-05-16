@@ -1,17 +1,27 @@
-(function () {
+(function() {
 
-    angular.module('clinpharm')
-        .factory('Utils', function ($ionicLoading, $ionicPopup) {
+        angular
+            .module('clinpharm')
+            .factory('Utils', Utils);
+
+        function Utils($ionicLoading, $ionicPopup) {
 
             var Utils = {
+                show: show,
+                hide: hide,
+                alertshow: alertshow,
+                errMessage: errMessage
+            }
 
-                show: function () {
+            return Utils;
+            
+            function show() {
 
                     $ionicLoading.show({
                         noBackdrop: true,
                         template: '<ion-spinner icon="ripple" class="spinner-positive"></ion-spinner><br /><span>Loading</span>'
                     });
-                },
+                };
 
                 //FIX spinner
                 //                {
@@ -24,51 +34,45 @@
                 //                    });
                 //                },
 
-                hide: function () {
+                function hide () {
                     $ionicLoading.hide();
-                },
+                };
 
-                alertshow: function (tit, msg) {
+                function alertshow (tit, msg) {
                     var alertPopup = $ionicPopup.alert({
                         title: tit,
                         template: msg
                     });
-                    alertPopup.then(function (res) {
+                    alertPopup.then(function(res) {
                         //console.log('Registrado correctamente.');
                     });
-                },
+                };
 
-                errMessage: function (err) {
+                function errMessage (err) {
 
                     var msg = "Unknown Error...";
 
                     if (err && err.code) {
                         switch (err.code) {
-                        case "EMAIL_TAKEN":
-                            msg = "This Email has been already been registered.";
-                            break;
-                        case "INVALID_EMAIL":
-                            msg = "Email address is not valid.";
-                            break;
-                        case "NETWORK_ERROR":
-                            msg = "Network Error.";
-                            break;
-                        case "INVALID_PASSWORD":
-                            msg = "Invalid Password.";
-                            break;
-                        case "INVALID_USER":
-                            msg = "Invalid User.";
-                            break;
+                            case "EMAIL_TAKEN":
+                                msg = "This Email has been already been registered.";
+                                break;
+                            case "INVALID_EMAIL":
+                                msg = "Email address is not valid.";
+                                break;
+                            case "NETWORK_ERROR":
+                                msg = "Network Error.";
+                                break;
+                            case "INVALID_PASSWORD":
+                                msg = "Invalid Password.";
+                                break;
+                            case "INVALID_USER":
+                                msg = "Invalid User.";
+                                break;
                         }
                     }
                     Utils.alertshow("Error", msg);
-                },
+                };
+            }; // end factory
 
-
-            };
-
-            return Utils;
-
-        });
-
-})();
+})(); 
